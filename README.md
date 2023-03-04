@@ -28,10 +28,10 @@ When adding new features or fixing bugs please keep in mind the current architec
 
 ![UML class diagram](./uml-class-diagram.png)
 
-##How to Use
+## How to Use
 This library is currently released in 3 versions: a umd version, a commonjs version,
 and a vanilla version using a global variable.
-###Regular JavaScript
+### Regular JavaScript
 This is the most bare-bones way of using this library. Simply import library in your
 HTML file before using it like so:
 ```HTML
@@ -40,14 +40,14 @@ HTML file before using it like so:
 ```
 The library will then be available under the global variable `MoneyCalculator`.
 
-###CommonJS
+### CommonJS
 This is mostly intended for use in Node applications. Simply import the respective file:
 ```JavaScript
 import myLibrary from "/path/to/library/money_calculator.commonjs.cjs";
 ```
 Then you can use the library under the name `myLibrary` or whatever you choose to name it.
 
-###UMD
+### UMD
 This is among other uses intended for importing with es6. To use the import feature
 in a browser, make sure to make your script using the library a module:
 ```HTML
