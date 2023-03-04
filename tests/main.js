@@ -1,3 +1,3 @@
-import "../dist/money_calculator.umd.js";
+import moneycalc from "../dist/money_calculator.commonjs.cjs";
 
-test3()
+let moneyValue = new moneycalc.Money(251.2512);

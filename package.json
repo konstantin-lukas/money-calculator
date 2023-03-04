@@ -12,12 +12,19 @@
     "build-umd-production": "webpack --env configType=umd production=true",
     "build-var-development": "webpack --env configType=var production=false",
     "build-var-production": "webpack --env configType=var production=true",
+
+    "run-cjs-development": "webpack --env configType=cjs production=false && node ./tests/main.js",
+    "run-umd-development": "webpack --env configType=umd production=false && node ./tests/main.js",
+    "run-var-development": "webpack --env configType=var production=false && node ./tests/main.js",
+
     "serve-cjs-development": "webpack-dev-server --env configType=cjs production=false",
     "serve-cjs-production": "webpack-dev-server --env configType=cjs production=true",
     "serve-umd-development": "webpack-dev-server --env configType=umd production=false",
     "serve-umd-production": "webpack-dev-server --env configType=umd production=true",
     "serve-var-development": "webpack-dev-server --env configType=var production=false",
-    "serve-var-production": "webpack-dev-server --env configType=var production=true"
+    "serve-var-production": "webpack-dev-server --env configType=var production=true",
+
+    "test-money-class": "webpack --env configType=cjs production=false && node ./tests/money.test.js"
   },
   "repository": {
     "type": "git",
