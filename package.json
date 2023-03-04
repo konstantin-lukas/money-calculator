@@ -4,14 +4,20 @@
   "description": "This is a library for doing artihmetic on currencies in a safe way. Also has formatting capabilites. WIP. Wait until first release before using.",
   "main": "index.js",
   "scripts": {
-    "build-as-module-development": "webpack --env bundleAsModule=true production=false",
-    "build-as-module-production": "webpack --env bundleAsModule=true production=true",
-    "build-as-non-module-development": "webpack --env bundleAsModule=false production=false",
-    "build-as-non-module-production": "webpack --env bundleAsModule=false production=true",
-    "serve-as-module-development": "webpack-dev-server --env bundleAsModule=true production=false",
-    "serve-as-module-production": "webpack-dev-server --env bundleAsModule=true production=true",
-    "serve-as-non-module-development": "webpack-dev-server --env bundleAsModule=false production=false",
-    "serve-as-non-module-production": "webpack-dev-server --env bundleAsModule=false production=true"
+    "run-node-test-cases": "node ./tests/main.js",
+    "build-all-production": "npm run build-cjs-production && npm run build-umd-production && npm run build-var-production",
+    "build-cjs-development": "webpack --env configType=cjs production=false",
+    "build-cjs-production": "webpack --env configType=cjs production=true",
+    "build-umd-development": "webpack --env configType=umd production=false",
+    "build-umd-production": "webpack --env configType=umd production=true",
+    "build-var-development": "webpack --env configType=var production=false",
+    "build-var-production": "webpack --env configType=var production=true",
+    "serve-cjs-development": "webpack-dev-server --env configType=cjs production=false",
+    "serve-cjs-production": "webpack-dev-server --env configType=cjs production=true",
+    "serve-umd-development": "webpack-dev-server --env configType=umd production=false",
+    "serve-umd-production": "webpack-dev-server --env configType=umd production=true",
+    "serve-var-development": "webpack-dev-server --env configType=var production=false",
+    "serve-var-production": "webpack-dev-server --env configType=var production=true"
   },
   "repository": {
     "type": "git",
@@ -26,7 +32,6 @@
   },
   "homepage": "https://github.com/konstantin-lukas/money-calculator#readme",
   "devDependencies": {
-    "http-server": "^14.1.1",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.5",
     "webpack": "^5.75.0",

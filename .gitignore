@@ -1,3 +1,2 @@
 node_modules
-dist/*.hot-update.*
-dist/*.LICENSE.txt
+dist

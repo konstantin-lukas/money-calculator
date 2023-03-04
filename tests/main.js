@@ -1,4 +1,3 @@
-import {test3} from "../dist/money_calculator.module.js";
+import "../dist/money_calculator.umd.js";
 
-test3();
-console.log(1)
+test3()

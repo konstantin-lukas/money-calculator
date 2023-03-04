@@ -1,12 +1,14 @@
 import path from 'path';
 const __dirname = path.resolve();
-const noModuleConfig = {
+const varConfig = {
     entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'money_calculator.js',
-        libraryTarget: 'window',
-        library: 'MoneyCalculator'
+        library: {
+            type: 'var',
+            name: 'MoneyCalculator'
+        }
     },
     module: {
         rules: [
@@ -33,13 +35,49 @@ const noModuleConfig = {
     },
     mode: 'development'
 };
-const moduleConfig = {
+const umdConfig = {
     entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'money_calculator.module.js',
-        libraryTarget: 'umd',
+        filename: 'money_calculator.umd.js',
+        library: {
+            type: 'umd'
+        },
         umdNamedDefine: true
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                use: 'ts-loader',
+                include: [path.resolve(__dirname, 'src')]
+            }
+        ]
+    },
+    devServer: {
+        static: __dirname,
+        compress: true,
+        port: 9000,
+        liveReload: true,
+        devMiddleware: {
+            publicPath: '/dist/',
+            writeToDisk: true
+        }
+    },
+    resolve: {
+        extensions: ['.ts', '.js']
+    },
+    mode: 'development'
+};
+const cjsConfig = {
+    entry: './src/index.ts',
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'money_calculator.commonjs.cjs',
+        library: {
+            type: 'commonjs'
+        }
     },
     module: {
         rules: [
@@ -68,18 +106,19 @@ const moduleConfig = {
 };
 export default (options) => {
     console.log(options);
-    if (typeof options.bundleAsModule === 'undefined' || options.production === 'boolean') {
-        console.log("MISSING ARGUMENTS FOR WEBPACK CONFIG! RETURN NON-MODULE DEV CONFIG!");
-        return noModuleConfig;
+    if (typeof options.configType === 'undefined' || options.production === 'undefined') {
+        console.log("MISSING ARGUMENTS FOR WEBPACK CONFIG! DEFAULTING TO VAR DEV CONFIG!");
+        return varConfig;
     }
-    if (options.bundleAsModule === 'true') {
-        moduleConfig.mode = options.production === 'true' ? 'production' : 'development';
-        console.log(moduleConfig)
-        return moduleConfig;
+    if (options.configType === 'cjs') {
+        cjsConfig.mode = options.production === 'true' ? 'production' : 'development';
+        return cjsConfig;
+    } else if (options.configType === 'umd') {
+        umdConfig.mode = options.production === 'true' ? 'production' : 'development';
+        return umdConfig
     } else {
-        noModuleConfig.mode = options.production === 'true' ? 'production' : 'development';
-        console.log(noModuleConfig)
-        return noModuleConfig
+        varConfig.mode = options.production === 'true' ? 'production' : 'development';
+        return varConfig
     }
 
 };
