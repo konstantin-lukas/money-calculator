@@ -26,7 +26,7 @@ folder and use the built files from the dist folder.
 
 When adding new features or fixing bugs please keep in mind the current architecture of the software:
 
-![UML class diagram](./uml-class-diagram.png)
+![UML class diagram](./uml-class-diagram.png?)
 ### Testing
 Tests are written for jest inside the tests folder. Again, if you've installed the
 dev-dependencies you should have everything set up. Jest is using ts-jest to compile
