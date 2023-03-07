@@ -4,10 +4,10 @@ const varConfig = {
     entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'money_calculator.js',
+        filename: 'moneydew.js',
         library: {
             type: 'var',
-            name: 'MoneyCalculator'
+            name: 'moneydew'
         }
     },
     module: {
@@ -39,7 +39,7 @@ const umdConfig = {
     entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'money_calculator.umd.js',
+        filename: 'moneydew.umd.js',
         library: {
             type: 'umd'
         },
@@ -74,7 +74,7 @@ const cjsConfig = {
     entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'money_calculator.commonjs.cjs',
+        filename: 'moneydew.commonjs.cjs',
         library: {
             type: 'commonjs'
         }
