@@ -22,7 +22,8 @@
     "serve-var-production": "webpack-dev-server --env configType=var production=true",
     "test-all": "jest --coverage",
     "test-money": "jest money.test.ts --coverage  --collectCoverageFrom=src/money.ts",
-    "test-money-calculator": "jest money_calculator.test.ts --coverage  --collectCoverageFrom=src/money_calculator.ts"
+    "test-money-calculator": "jest money_calculator.test.ts --coverage  --collectCoverageFrom=src/money_calculator.ts",
+    "test-money-formatter": "jest money_formatter.test.ts --coverage  --collectCoverageFrom=src/money_formatter.ts"
   },
   "repository": {
     "type": "git",

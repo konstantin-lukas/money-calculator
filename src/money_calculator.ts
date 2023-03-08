@@ -1,13 +1,13 @@
 import {Money} from "./money";
 
 enum roundingMode {
-    Floor,
-    Ceil,
-    Trunc
+    FLOOR,
+    CEIL,
+    TRUNC
 }
 
 export class MoneyCalculator {
-    private roundingMode : roundingMode = roundingMode.Floor;
+    private roundingMode : roundingMode = roundingMode.FLOOR;
     private static addDigits(digit1 : string, digit2 : string, carry : boolean) : [string, boolean] {
         if (!/^\d$/.test(digit1) || !/^\d$/.test(digit2))
             throw new Error('Strings need to be single ascii digits.');
