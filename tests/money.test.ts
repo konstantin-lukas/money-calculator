@@ -46,6 +46,9 @@ describe('Money class', () => {
             expect(() => {
                 moneyValue.setValue('--1');
             }).toThrowError();
+            expect(() => {
+                moneyValue.setValue('');
+            }).toThrowError();
         });
         it('should interpret -0 as 0', () => {
             moneyValue.setValue('-0');

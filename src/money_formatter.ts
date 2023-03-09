@@ -53,9 +53,73 @@ export class MoneyFormatter {
         string = string.replace(/[9]/g, this.digitCharacters[9]);
         return string;
     }
-    public getFormattedMyriadString(money : Money) {
+    public getFormattedMyriadString(money : Money) : string {
         if (money.getFloatingPointPrecision() !== 0)
-            throw new Error('Only values without decimals are supported for conversion to myriad system.')
+            throw new Error('Only values without decimals are supported for conversion to myriad system.');
+        let moneyString : string = money.getIntegerPart();
+        let indexOfLastNecessaryCharacter : number = 0;
+        if (moneyString.length === 0)
+            throw new Error('Cannot format empty string');
+        else if (moneyString.length <= 5) {
+            const indexOfCharacterForNine : number = 9;
+            indexOfLastNecessaryCharacter = indexOfCharacterForNine + moneyString.length - 1;
+        } else {
+            const indexOfCharacterForTenThousand : number = 13;
+            indexOfLastNecessaryCharacter = indexOfCharacterForTenThousand + Math.trunc((moneyString.length - 5) / 4);
+        }
+
+        if (indexOfLastNecessaryCharacter >= this.myriadCharacters.length)
+            throw new Error('Not enough characters defined to print myriad string. Use set setMyriadCharacters to define more characters.');
+
+        let result : string =
+            (this.symbolPosition === position.FRONT)
+                ? (this.currencySymbol + this.symbolSeparator)
+                : '';
+
+        moneyString = moneyString.split("").reverse().join("");
+        for (let i = 0; i < moneyString.length; i++) {
+            let digit : number = 0;
+            switch (i) {
+
+                case 0: // 0 - 9
+                    digit = parseInt(moneyString.charAt(i));
+                    if (digit !== 0)
+                        result = this.myriadCharacters[digit] + result;
+                    break;
+                case 1: // 10
+                case 2: // 100
+                case 4: // 10000
+                    digit = parseInt(moneyString.charAt(i));
+                    if (digit !== 0) {
+                        let index = 9 + i;
+                        if (digit === 1) {
+                            result = this.myriadCharacters[index] + result;
+                        } else {
+                            result = this.myriadCharacters[digit] + this.myriadCharacters[index] + result;
+                        }
+                    }
+                    break;
+                case 3: // 1000
+                    digit = parseInt(moneyString.charAt(i));
+                    if (digit !== 0) {
+                        const hundred = 10;
+                        result = this.myriadCharacters[digit] + this.myriadCharacters[hundred] + result;
+                    }
+                    break;
+
+            }
+
+        }
+
+
+        result += money.getSign();
+
+
+
+        if (this.symbolPosition === position.BACK)
+            result += this.symbolSeparator + this.currencySymbol;
+        return result;
+
     }
     public getFormattedString(money : Money) {
         let result : string =
@@ -63,6 +127,7 @@ export class MoneyFormatter {
                 ? (this.currencySymbol + this.symbolSeparator)
                 : '';
 
+        result += money.getSign();
         let integerPart : string = this.replaceDigits(money.getIntegerPart());
         if (integerPart.length > this.groupSize && this.groupSeparator !== '') {
             let index : number = 0;
@@ -72,9 +137,10 @@ export class MoneyFormatter {
             }
         }
         result += integerPart;
-        result += this.decimalSeparator;
-        result += this.replaceDigits(money.getFractionalPart());
-
+        if (money.getFloatingPointPrecision() > 0) {
+            result += this.decimalSeparator;
+            result += this.replaceDigits(money.getFractionalPart());
+        }
 
         if (this.symbolPosition === position.BACK)
             result += this.symbolSeparator + this.currencySymbol;
@@ -83,11 +149,21 @@ export class MoneyFormatter {
 
         return result;
     }
-    public setDigitCharacters(digits : string) : void {
+    public setDigitCharacters(digits : string[]) : void {
         if (digits.length !== 10)
-            throw new Error('10 digits need to passed as a string.');
+            throw new Error('10 digits need to passed as a string array.');
         for (let i = 0; i < digits.length; i++) {
-            this.digitCharacters[i] = digits.charAt(i);
+            this.digitCharacters[i] = digits[i];
         }
+    }
+    // THE NUMBER OF CHARACTERS DETERMINES THE HIGHEST POSSIBLE VALUE
+    public setMyriadCharacters(characters : string[]) {
+        this.myriadCharacters = characters;
+    }
+    public setSymbolPosition(position : position) {
+        this.symbolPosition = position;
+    }
+    public setSymbolSeparator(separator : string) {
+        this.symbolSeparator = separator;
     }
 }
