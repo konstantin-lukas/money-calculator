@@ -5,41 +5,91 @@ export enum position {
     BACK
 }
 
+export enum myriadMode {
+    JAPANESE,
+    CHINESE
+}
+
 export class MoneyFormatter {
     private currencySymbol : string = '$';
     private symbolPosition : position = position.FRONT;
     private symbolSeparator : string = ' ';
     private digitCharacters : string[] = ['0','1','2','3','4','5','6','7','8','9'];
-    // STARTING AT 万 EACH SYMBOL IS 10,000 TIMES THE PREVIOUS ONE
+    private myriadMode : myriadMode = myriadMode.JAPANESE;
     private myriadCharacters : string[] = [
-        '〇', // 0
-        '一', // 1
-        '二', // 2
-        '三', // 3
-        '四', // 4
-        '五', // 5
-        '六', // 6
-        '七', // 7
-        '八', // 8
-        '九', // 9
         '十', // 10
         '百', // 100
         '千', // 1,000
-        '万', // 10,000
-        '亿', // 10^8
+        '万', // 10,000 : STARTING AFTER THIS ONE, EACH SYMBOL IS 10,000 TIMES THE PREVIOUS ONE
+        '億', // 10^8
         '兆', // 10^12
         '京', // 10^16
         '垓', // 10^20
-        '秭', // 10^24
-        '穰', // 10^28
-        '沟', // 10^32
-        '涧', // 10^36
+        '𥝱',// 10^24
+        '穣', // 10^28
+        '溝', // 10^32
+        '澗', // 10^36
         '正', // 10^40
-        '载' // 10^44
+        '載', // 10^44
     ];
     private decimalSeparator : string = '.';
     private groupSeparator : string = ',';
     private groupSize : number = 3;
+    private handleJapaneseMyriad(moneyString : string) : string {
+        let digit : number = 0;
+        let result : string = '';
+        let nextThreeDigitsContainNonZeroDigit : boolean = false;
+        for (let i = 0; i < moneyString.length; i++) {
+            digit = parseInt(moneyString.charAt(i));
+            nextThreeDigitsContainNonZeroDigit = moneyString.length > i + 1 && moneyString.charAt(i + 1) !== '0' ||
+                moneyString.length > i + 2 && moneyString.charAt(i + 2) !== '0' ||
+                moneyString.length > i + 3 && moneyString.charAt(i + 3) !== '0';
+            switch (i) {
+                case 0: // 0 - 9
+                    if (digit !== 0)
+                        result = this.digitCharacters[digit] + result;
+                    break;
+                case 1: // 10
+                case 2: // 100
+                case 3: // 1000
+                    if (digit !== 0) {
+                        if (digit === 1)
+                            result = this.myriadCharacters[i - 1] + result;
+                        else
+                            result = this.digitCharacters[digit] + this.myriadCharacters[i - 1] + result;
+                    }
+                    break;
+                case 4: // 10000
+                    if (digit !== 0)
+                        result = this.digitCharacters[digit] + this.myriadCharacters[i - 1] + result;
+                    else if (nextThreeDigitsContainNonZeroDigit)
+                        result = this.myriadCharacters[Math.trunc(i / 4) + 2] + result;
+                    break;
+                default:
+                    if (i % 4 === 0) {
+                        if (digit !== 0)
+                            result = this.digitCharacters[digit] + this.myriadCharacters[Math.trunc(i / 4) + 2] + result;
+                        else if (nextThreeDigitsContainNonZeroDigit)
+                            result = this.myriadCharacters[Math.trunc(i / 4) + 2] + result;
+                    } else if (i % 4 === 1 && digit !== 0) {
+                        if (digit === 1)
+                            result = this.myriadCharacters[0] + result;
+                        else
+                            result = this.digitCharacters[digit] + this.myriadCharacters[0] + result;
+                    } else if (i % 4 === 2 && digit !== 0) {
+                        if (digit === 1)
+                            result = this.myriadCharacters[1] + result;
+                        else
+                            result = this.digitCharacters[digit] + this.myriadCharacters[1] + result;
+                    } else if (i % 4 === 3 && digit !== 0) {
+                        result = this.digitCharacters[digit] + this.myriadCharacters[2] + result;
+                    }
+                    break;
+            }
+
+        }
+        return result;
+    }
     private replaceDigits(string : string) : string {
         string = string.replace(/[0]/g, this.digitCharacters[0]);
         string = string.replace(/[1]/g, this.digitCharacters[1]);
@@ -57,59 +107,25 @@ export class MoneyFormatter {
         if (money.getFloatingPointPrecision() !== 0)
             throw new Error('Only values without decimals are supported for conversion to myriad system.');
         let moneyString : string = money.getIntegerPart();
-        let indexOfLastNecessaryCharacter : number = 0;
-        if (moneyString.length === 0)
-            throw new Error('Cannot format empty string');
-        else if (moneyString.length <= 5) {
-            const indexOfCharacterForNine : number = 9;
-            indexOfLastNecessaryCharacter = indexOfCharacterForNine + moneyString.length - 1;
+
+        if (this.myriadCharacters.length <= 4 && moneyString.length !== 1 && this.myriadCharacters.length < moneyString.length - 1
+            || this.myriadCharacters.length > 4 && this.myriadCharacters.length < 3 + Math.trunc((moneyString.length - 1) / 4))
+            throw new Error('Not enough characters defined to print myriad string. Use setMyriadCharacters to define more characters.');
+
+        let result : string = '';
+
+        if (moneyString.length === 1) {
+            result = this.digitCharacters[parseInt(moneyString)];
         } else {
-            const indexOfCharacterForTenThousand : number = 13;
-            indexOfLastNecessaryCharacter = indexOfCharacterForTenThousand + Math.trunc((moneyString.length - 5) / 4);
-        }
-
-        if (indexOfLastNecessaryCharacter >= this.myriadCharacters.length)
-            throw new Error('Not enough characters defined to print myriad string. Use set setMyriadCharacters to define more characters.');
-
-        let result : string =
-            (this.symbolPosition === position.FRONT)
-                ? (this.currencySymbol + this.symbolSeparator)
-                : '';
-
-        moneyString = moneyString.split("").reverse().join("");
-        for (let i = 0; i < moneyString.length; i++) {
-            let digit : number = 0;
-            switch (i) {
-
-                case 0: // 0 - 9
-                    digit = parseInt(moneyString.charAt(i));
-                    if (digit !== 0)
-                        result = this.myriadCharacters[digit] + result;
-                    break;
-                case 1: // 10
-                case 2: // 100
-                case 4: // 10000
-                    digit = parseInt(moneyString.charAt(i));
-                    if (digit !== 0) {
-                        let index = 9 + i;
-                        if (digit === 1) {
-                            result = this.myriadCharacters[index] + result;
-                        } else {
-                            result = this.myriadCharacters[digit] + this.myriadCharacters[index] + result;
-                        }
-                    }
-                    break;
-                case 3: // 1000
-                    digit = parseInt(moneyString.charAt(i));
-                    if (digit !== 0) {
-                        const hundred = 10;
-                        result = this.myriadCharacters[digit] + this.myriadCharacters[hundred] + result;
-                    }
-                    break;
+            moneyString = moneyString.split("").reverse().join("");
+            if (this.myriadMode === myriadMode.JAPANESE) {
+                result = this.handleJapaneseMyriad(moneyString);
+            } else if (this.myriadMode === myriadMode.CHINESE) {
 
             }
 
         }
+
 
 
         result += money.getSign();
@@ -118,6 +134,8 @@ export class MoneyFormatter {
 
         if (this.symbolPosition === position.BACK)
             result += this.symbolSeparator + this.currencySymbol;
+        else if (this.symbolPosition === position.FRONT)
+            result = this.currencySymbol + this.symbolSeparator + result;
         return result;
 
     }
