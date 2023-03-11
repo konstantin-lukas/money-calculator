@@ -8,6 +8,20 @@ describe('Money class', () => {
             expect(moneyValue.getValue()).toBe('251.2512');
         });
     });
+    describe('The isNull method should return true iff the value equals 0', () => {
+        it('should set the initial value of the object according to number', () => {
+            moneyValue.setValue('0.000000');
+            expect(moneyValue.isNull()).toBe(true);
+            moneyValue.setValue('-0.000000');
+            expect(moneyValue.isNull()).toBe(true);
+            moneyValue.setValue('-0');
+            expect(moneyValue.isNull()).toBe(true);
+            moneyValue.setValue('0.0');
+            expect(moneyValue.isNull()).toBe(true);
+            moneyValue.setValue('0.1');
+            expect(moneyValue.isNull()).toBe(false);
+        });
+    });
     describe('The setValue method', () => {
         it('should handle negative numbers', () => {
             moneyValue.setValue('-12.521235612623');

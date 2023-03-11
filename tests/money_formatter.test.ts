@@ -115,12 +115,17 @@ describe('Money Formatter class', () => {
             expect(formatter.getFormattedMyriadString(money)).toBe('0$');
             formatter.setSymbolPosition(position.FRONT);
             expect(formatter.getFormattedMyriadString(money)).toBe('$0');
+            money.setValue('10');
+            expect(formatter.getFormattedMyriadString(money)).toBe('$十');
+            money.setValue('20');
+            expect(formatter.getFormattedMyriadString(money)).toBe('$2十');
         });
     });
     describe('The setMyriadCharacters method should', () => {
         let formatter : MoneyFormatter = new MoneyFormatter();
         let money : Money = new Money('1000.00');
         it('should change the characters used by the myriad formatter', () => {
+            formatter.setMyriadCharacters(['OOF','YIKES']);
             expect(() => formatter.getFormattedMyriadString(money)).toThrowError();
         });
     });

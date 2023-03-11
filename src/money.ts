@@ -1,21 +1,21 @@
 export class Money {
-    private isNegative : boolean = false;
+    private negative : boolean = false;
     private integerPart : string = '0';
     private fractionalPart : string = '0';
     private floatingPointPrecision : number = 1;
-    private static intRegex = /^\d+$/;
+    private static intRegex : RegExp = /^\d+$/;
     public constructor(initialValue : string) {
         this.setValue(initialValue);
     }
 
     public setValue(value : string) {
-        if (value === '-0') value = '0';
+        if (/^-[0]+(?:\.0+)?$/.test(value)) value = value.substring(1);
         const negativeRegex = /^-\d+(?:\.\d+)?$/;
         if (negativeRegex.test(value)) {
             value = value.substring(1);
-            this.isNegative = true;
+            this.negative = true;
         } else {
-            this.isNegative = false;
+            this.negative = false;
         }
 
         const floatRegex = /^\d+\.\d+$/;
@@ -50,12 +50,14 @@ export class Money {
     public setIntegerPart(integerPart : string) : void {
         if (!Money.intRegex.test(integerPart)) throw new Error('Input number is not a valid positive integer.');
         this.integerPart = integerPart.toString();
+        if (this.isNull()) this.negative = false;
     }
 
     public setFractionalPart(fractionalPart : string) : void {
         if (!Money.intRegex.test(fractionalPart)) throw new Error('Input number is not a valid positive integer to represent floating point numbers.');
         this.fractionalPart = fractionalPart.toString();
         this.floatingPointPrecision = fractionalPart.length;
+        if (this.isNull()) this.negative = false;
     }
 
     public getFloatingPointPrecision() : number {
@@ -63,6 +65,19 @@ export class Money {
     }
 
     public getSign() : string {
-        return this.isNegative ? '-' : '';
+        return this.negative ? '-' : '';
+    }
+
+    public isNegative() : boolean {
+        return this.negative;
+    }
+
+    public setSign(sign : boolean) : void {
+        if (this.isNull()) return;
+        this.negative = sign;
+    }
+
+    public isNull() : boolean {
+        return /^[0]+$/.test(this.integerPart) && /^[0]*$/.test(this.fractionalPart);
     }
 }
