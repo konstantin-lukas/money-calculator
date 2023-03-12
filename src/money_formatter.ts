@@ -14,6 +14,8 @@ export class MoneyFormatter {
     private currencySymbol : string = '$';
     private symbolPosition : position = position.FRONT;
     private symbolSeparator : string = ' ';
+    private posSign : string = '';
+    private negSign : string = '-';
     private digitCharacters : string[] = ['0','1','2','3','4','5','6','7','8','9'];
     private myriadMode : myriadMode = myriadMode.JAPANESE;
     private myriadCharacters : string[] = [
@@ -35,6 +37,16 @@ export class MoneyFormatter {
     private decimalSeparator : string = '.';
     private groupSeparator : string = ',';
     private groupSize : number = 3;
+
+    /**
+     *
+     * @param moneyString The string to convert to a myriad string.
+     * @private
+     * @description Converts the string to the Japanese myriad format. In this format 千 is only preceded by 一 if it serves
+     * as a multiplier, e.g. 一千万 but 千百. 万 is always preceded by 一, i.e. 一万. The numbers 0-9 are the ones assigned
+     * with the setMyriadCharacters(). By default it will return 1万, so you need to set those characters manually if
+     * you want pure Kanji.
+     */
     private handleJapaneseMyriad(moneyString : string) : string {
         let digit : number = 0;
         let result : string = '';
@@ -90,6 +102,13 @@ export class MoneyFormatter {
         }
         return result;
     }
+
+    /**
+     *
+     * @param string The string in which to replace characters.
+     * @private
+     * @brief Replaces all digits in a string with the characters assigned in the formatter.
+     */
     private replaceDigits(string : string) : string {
         string = string.replace(/[0]/g, this.digitCharacters[0]);
         string = string.replace(/[1]/g, this.digitCharacters[1]);
@@ -103,6 +122,11 @@ export class MoneyFormatter {
         string = string.replace(/[9]/g, this.digitCharacters[9]);
         return string;
     }
+    /**
+     * @param money The value to convert to a myriad string.
+     * @description Formats the value to a myriad format string like in many east Asian languages. Use setMyriadMode() method
+     * to change behaviour.
+     */
     public getFormattedMyriadString(money : Money) : string {
         if (money.getFloatingPointPrecision() !== 0)
             throw new Error('Only values without decimals are supported for conversion to myriad system.');
@@ -128,7 +152,7 @@ export class MoneyFormatter {
 
 
 
-        result += money.getSign();
+        result += money.isNegative() ? this.negSign : this.posSign;
 
 
 
@@ -139,13 +163,17 @@ export class MoneyFormatter {
         return result;
 
     }
+    /**
+     * @param money The value to format.
+     * @brief Formats the value depending on the current state of the formatter.
+     */
     public getFormattedString(money : Money) {
         let result : string =
             (this.symbolPosition === position.FRONT)
                 ? (this.currencySymbol + this.symbolSeparator)
                 : '';
 
-        result += money.getSign();
+        result += money.isNegative() ? this.negSign : this.posSign;
         let integerPart : string = this.replaceDigits(money.getIntegerPart());
         if (integerPart.length > this.groupSize && this.groupSeparator !== '') {
             let index : number = 0;
@@ -167,6 +195,12 @@ export class MoneyFormatter {
 
         return result;
     }
+    /**
+     * @param digits An array of characters of length 10.
+     * @description Allows to set the symbols to be used for the digits 0-9. You can use any string to replace any digit.
+     * If you pass ['NULL','1','2','3','4','5','6','7','8','9'] as the parameter for instance, 105$ will be printed as
+     * 1NULL5$.
+     */
     public setDigitCharacters(digits : string[]) : void {
         if (digits.length !== 10)
             throw new Error('10 digits need to passed as a string array.');
@@ -174,13 +208,27 @@ export class MoneyFormatter {
             this.digitCharacters[i] = digits[i];
         }
     }
-    // THE NUMBER OF CHARACTERS DETERMINES THE HIGHEST POSSIBLE VALUE
+    /**
+     * @param characters The characters required to format to a myriad string as a string array.
+     * @description The amount of characters you pass inside the array determines the largest value you can format to a
+     * myriad string. The following shows the the meaning of the character for each index of the array:
+     * [0]=10,[1]=100,[2]=1000,[3]=10^4^,[4]=10^8^,[5]=10^12^, ... This means that if you pass in an array of length 1 you
+     * can only formats values up to 99 (e.g. 九十九 in Japanese).
+     */
     public setMyriadCharacters(characters : string[]) {
         this.myriadCharacters = characters;
     }
+    /**
+     * @param position The position to put the currency symbol.
+     * @brief Set whether to display the symbol in front of or behind the number.
+     */
     public setSymbolPosition(position : position) {
         this.symbolPosition = position;
     }
+    /**
+     * @param separator The characters that separate the numbers from the currency symbol.
+     * @brief Set the characters that separate the numbers from the currency symbol. Defaults to a simple space.
+     */
     public setSymbolSeparator(separator : string) {
         this.symbolSeparator = separator;
     }

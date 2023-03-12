@@ -1,5 +1,4 @@
 import {Money} from "./money";
-import * as assert from "assert";
 
 enum roundingMode {
     FLOOR,
@@ -9,6 +8,14 @@ enum roundingMode {
 
 export class MoneyCalculator {
     private roundingMode : roundingMode = roundingMode.FLOOR;
+
+    /**
+     * @param digit1
+     * @param digit2
+     * @param carry
+     * @private
+     * @description Adds two numbers and returns the result as well as the resulting carry bit in a tuple.
+     */
     private static addDigits(digit1 : string, digit2 : string, carry : boolean) : [string, boolean] {
         if (!/^\d$/.test(digit1) || !/^\d$/.test(digit2))
             throw new Error('Strings need to be single ascii digits.');
@@ -16,12 +23,23 @@ export class MoneyCalculator {
         let resultString : string = result.toString();
         return [resultString.length === 1 ? resultString : resultString.charAt(1), result >= 10];
     }
+
+    /**
+     * @param money1
+     * @param money2
+     * @description Returns the smaller of the two values. Does not perform a copy / returns the same object as passed in.
+     */
     public static min(money1 : Money, money2 : Money) : Money {
         const moneyTmp : Money = MoneyCalculator.max(money1, money2);
         if (moneyTmp !== MoneyCalculator.max(money2, money1) || moneyTmp === money2)
             return money1;
         return money2;
     }
+    /**
+     * @param money1
+     * @param money2
+     * @description Returns the larger of the two values. Does not perform a copy / returns the same object as passed in.
+     */
     public static max(money1 : Money, money2 : Money) : Money {
         const integerPart1 = money1.getIntegerPart();
         const integerPart2 = money2.getIntegerPart();
@@ -58,6 +76,11 @@ export class MoneyCalculator {
         }
         return money1;
     }
+    /**
+     * @param money1 This value will also hold the result.
+     * @param money2 This value will get added to the first one.
+     * @description Adds two numbers and saves the result in the first one. Also returns reference to the first one.
+     */
     public add(money1 : Money, money2 : Money) : Money {
         const floatingPointPrecision = money1.getFloatingPointPrecision();
         if (floatingPointPrecision !== money2.getFloatingPointPrecision())
@@ -72,12 +95,12 @@ export class MoneyCalculator {
             let borrow : boolean = false;
             const signOne : boolean = money1.isNegative();
             const signTwo : boolean = money2.isNegative();
-            money1.setSign(false);
-            money2.setSign(false);
+            money1.makeNegative(false);
+            money2.makeNegative(false);
             const largerAbs : Money = MoneyCalculator.max(money1, money2);
             const smallerAbs : Money = largerAbs === money1 ? money2 : money1;
-            money1.setSign(signOne);
-            money2.setSign(signTwo);
+            money1.makeNegative(signOne);
+            money2.makeNegative(signTwo);
 
             let largerAbsDigit : string = '';
             let smallerAbsDigit : string = '';
@@ -94,8 +117,6 @@ export class MoneyCalculator {
                 for (let i = largerAbsPart.length - 1; i >= 0; i--) {
                     largerAbsDigit = largerAbsPart.charAt(i);
                     smallerAbsDigit = smallerAbsPart.charAt(i);
-                    if (!/^\d$/.test(largerAbsDigit) || !/^\d$/.test(smallerAbsDigit))
-                        throw new Error('Strings need to be single ascii digits.');
                     const largerAbsDigitAsNumber : number = parseInt(largerAbsDigit);
                     const smallerAbsDigitAsNumber : number = parseInt(smallerAbsDigit) + (borrow ? 1 : 0);
                     if (largerAbsDigitAsNumber >= smallerAbsDigitAsNumber) {
@@ -119,7 +140,7 @@ export class MoneyCalculator {
             }
 
             money1.setIntegerPart(integerPartResult === '0' ? '0' : integerPartResult.replace(/^0+/, ''));
-            money1.setSign(largerAbs.isNegative());
+            money1.makeNegative(largerAbs.isNegative());
         } else {
             let integerPart1 : string = money1.getIntegerPart();
             let integerPart2 : string = money2.getIntegerPart();
@@ -150,6 +171,7 @@ export class MoneyCalculator {
                 carry = digitAndCarry[1];
                 integerPartResult =  digitAndCarry[0] + integerPartResult;
             }
+            if (carry) integerPartResult = '1' + integerPartResult;
             money1.setIntegerPart(integerPartResult);
         }
 
@@ -157,4 +179,22 @@ export class MoneyCalculator {
 
         return money1;
     }
+    /**
+     * @param money1 This value will also hold the result.
+     * @param money2 This value will get subtracted from the first one.
+     * @description Subtracts two numbers and saves the result in the first one. Also returns reference to the first one.
+     */
+    public subtract(money1 : Money, money2 : Money) : Money {
+        const negative : boolean = money2.isNegative();
+        money2.makeNegative(!negative);
+        try {
+            this.add(money1, money2);
+        } catch(error) {
+            money2.makeNegative(negative);
+            throw error;
+        }
+        money2.makeNegative(negative);
+        return money1;
+    }
 }
+

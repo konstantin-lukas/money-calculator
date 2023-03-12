@@ -28,6 +28,9 @@ describe('Money Calculator class', () => {
             money1.setValue('390.0');
             money2.setValue('10.00');
             expect(() => calculator.add(money1, money2)).toThrowError();
+            money1.setValue('390');
+            money2.setValue('10.0');
+            expect(() => calculator.add(money1, money2)).toThrowError();
         });
         it('should add single digit numbers', () => {
             money1.setValue('1');
@@ -82,7 +85,30 @@ describe('Money Calculator class', () => {
             money2.setValue('111.1');
             calculator.add(money1, money2);
             expect(money1.getValue()).toBe('88.9');
-            // TODO: ADD MORE TESTS
+            money1.setValue('9.99');
+            money2.setValue('0.01');
+            calculator.add(money1, money2);
+            expect(money1.getValue()).toBe('10.00');
+            money1.setValue('9.99');
+            money2.setValue('0.10');
+            calculator.add(money1, money2);
+            expect(money1.getValue()).toBe('10.09');
+            money1.setValue('0.99');
+            money2.setValue('0.01');
+            calculator.add(money1, money2);
+            expect(money1.getValue()).toBe('1.00');
+            money1.setValue('1.00');
+            money2.setValue('-0.01');
+            calculator.add(money1, money2);
+            expect(money1.getValue()).toBe('0.99');
+            money1.setValue('-1.00');
+            money2.setValue('-0.01');
+            calculator.add(money1, money2);
+            expect(money1.getValue()).toBe('-1.01');
+            money1.setValue('0.01');
+            money2.setValue('-0.02');
+            calculator.add(money1, money2);
+            expect(money1.getValue()).toBe('-0.01');
         });
     });
     describe('The max method', () => {
@@ -135,6 +161,21 @@ describe('Money Calculator class', () => {
             money1.setValue('-0.00');
             money2.setValue('-0.00');
             expect(MoneyCalculator.max(money1,money2)).toBe(money1);
+            money1.setValue('-120.00');
+            money2.setValue('-110.00');
+            expect(MoneyCalculator.max(money1,money2)).toBe(money2);
+            money1.setValue('-110.00');
+            money2.setValue('-120.00');
+            expect(MoneyCalculator.max(money1,money2)).toBe(money1);
+            money1.setValue('-120.00');
+            money2.setValue('-120.001');
+            expect(MoneyCalculator.max(money1,money2)).toBe(money1);
+            money1.setValue('120.001');
+            money2.setValue('120.00');
+            expect(MoneyCalculator.max(money1,money2)).toBe(money1);
+            money1.setValue('-120.321');
+            money2.setValue('-120.00');
+            expect(MoneyCalculator.max(money1,money2)).toBe(money2);
         });
     });
     describe('The min method', () => {
@@ -197,6 +238,72 @@ describe('Money Calculator class', () => {
             expect(() => MoneyCalculator['addDigits']('０','0',false)).toThrowError();
             expect(() => MoneyCalculator['addDigits']('10','0',false)).toThrowError();
             expect(() => MoneyCalculator['addDigits']('x','0',false)).toThrowError();
+        });
+    });
+    describe('The subtract method', () => {
+        let money1 = new Money('10.25');
+        let money2 = new Money('399.99');
+        let calculator = new MoneyCalculator();
+        it('should subtract two money values', () => {
+            calculator.subtract(money1, money2);
+            expect(money1.getValue()).toBe('-389.74');
+        });
+        it('should not change the value of the second money value', () => {
+            calculator.subtract(money1, money2);
+            expect(money2.getValue()).toBe('399.99');
+        });
+        it('should subtract two money values with different integer lengths', () => {
+            money1.setValue('390.00');
+            money2.setValue('10.00');
+            calculator.subtract(money1, money2);
+            expect(money1.getValue()).toBe('380.00');
+            money1.setValue('3090.00');
+            money2.setValue('10.00');
+            calculator.subtract(money1, money2);
+            expect(money1.getValue()).toBe('3080.00');
+        });
+        it('should reject subtracting two numbers with different floating point precision and not change the' +
+            'values of the numbers on error', () => {
+            money1.setValue('390.0');
+            money2.setValue('10.00');
+            expect(() => calculator.subtract(money1, money2)).toThrowError();
+            expect(money1.getValue()).toBe('390.0');
+            expect(money2.getValue()).toBe('10.00');
+            money1.setValue('390');
+            money2.setValue('10.0');
+            expect(() => calculator.subtract(money1, money2)).toThrowError();
+            expect(money1.getValue()).toBe('390');
+            expect(money2.getValue()).toBe('10.0');
+        });
+        it('should subtract single digit numbers', () => {
+            money1.setValue('1');
+            money2.setValue('3');
+            calculator.subtract(money1, money2);
+            expect(money1.getValue()).toBe('-2');
+        });
+        it('should subtract two negative numbers', () => {
+            money1.setValue('-112.125');
+            money2.setValue('-12.125');
+            calculator.subtract(money1, money2);
+            expect(money1.getValue()).toBe('-100.000');
+        });
+        it('should subtract a positive and a negative number', () => {
+            money1.setValue('-0.125');
+            money2.setValue('0.125');
+            calculator.subtract(money1, money2);
+            expect(money1.getValue()).toBe('-0.250');
+            money1.setValue('0.125');
+            money2.setValue('-0.125');
+            calculator.subtract(money1, money2);
+            expect(money1.getValue()).toBe('0.250');
+            money1.setValue('1.00');
+            money2.setValue('-0.01');
+            calculator.subtract(money1, money2);
+            expect(money1.getValue()).toBe('1.01');
+            money1.setValue('1.00');
+            money2.setValue('0.01');
+            calculator.subtract(money1, money2);
+            expect(money1.getValue()).toBe('0.99');
         });
     });
 });

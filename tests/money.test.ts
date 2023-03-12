@@ -35,7 +35,7 @@ describe('Money class', () => {
             moneyValue.setValue('-252');
             expect(moneyValue.getValue()).toBe('-252');
             expect(moneyValue.getIntegerPart()).toBe('252');
-            expect(moneyValue.getSign()).toBe('-');
+            expect(moneyValue.isNegative()).toBe(true);
         });
         it('should handle large integers', () => {
             moneyValue.setValue('253867238967239085902389590239502395232');
@@ -66,7 +66,7 @@ describe('Money class', () => {
         });
         it('should interpret -0 as 0', () => {
             moneyValue.setValue('-0');
-            expect(moneyValue.getSign()).toBe('');
+            expect(moneyValue.isNegative()).toBe(false);
         });
     });
     describe('The setIntegerPart method', function () {
