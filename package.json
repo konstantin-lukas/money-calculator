@@ -23,7 +23,8 @@
     "test-all": "jest --coverage",
     "test-money": "jest money.test.ts --coverage  --collectCoverageFrom=src/money.ts",
     "test-money-calculator": "jest money_calculator.test.ts --coverage  --collectCoverageFrom=src/money_calculator.ts",
-    "test-money-formatter": "jest money_formatter.test.ts --coverage  --collectCoverageFrom=src/money_formatter.ts"
+    "test-money-formatter": "jest money_formatter.test.ts --coverage  --collectCoverageFrom=src/money_formatter.ts",
+    "test-formatter-factory": "jest formatter_factory.test.ts --coverage  --collectCoverageFrom=src/formatter_factory.ts"
   },
   "repository": {
     "type": "git",

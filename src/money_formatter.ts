@@ -1,6 +1,6 @@
 import {Money} from "./money";
 
-export enum position {
+export enum symbolPosition {
     FRONT,
     BACK
 }
@@ -10,9 +10,16 @@ export enum myriadMode {
     CHINESE
 }
 
+export enum negativeDisplayMode {
+    BEFORE,
+    AFTER,
+    BETWEEN,
+    PARENTHESES
+}
+
 export class MoneyFormatter {
     private currencySymbol : string = '$';
-    private symbolPosition : position = position.FRONT;
+    private symbolPosition : symbolPosition = symbolPosition.FRONT;
     private symbolSeparator : string = ' ';
     private posSign : string = '';
     private negSign : string = '-';
@@ -37,6 +44,7 @@ export class MoneyFormatter {
     private decimalSeparator : string = '.';
     private groupSeparator : string = ',';
     private groupSize : number = 3;
+    private negativeDisplayMode : negativeDisplayMode = negativeDisplayMode.BEFORE;
 
     /**
      *
@@ -144,21 +152,21 @@ export class MoneyFormatter {
             moneyString = moneyString.split("").reverse().join("");
             if (this.myriadMode === myriadMode.JAPANESE) {
                 result = this.handleJapaneseMyriad(moneyString);
-            } else if (this.myriadMode === myriadMode.CHINESE) {
-
+            } else {
+                throw new Error('Provided myriad mode not supported.');
             }
 
         }
 
 
 
-        result += money.isNegative() ? this.negSign : this.posSign;
+        result = (money.isNegative() ? this.negSign : this.posSign) + result;
 
 
 
-        if (this.symbolPosition === position.BACK)
+        if (this.symbolPosition === symbolPosition.BACK)
             result += this.symbolSeparator + this.currencySymbol;
-        else if (this.symbolPosition === position.FRONT)
+        else if (this.symbolPosition === symbolPosition.FRONT)
             result = this.currencySymbol + this.symbolSeparator + result;
         return result;
 
@@ -169,13 +177,13 @@ export class MoneyFormatter {
      */
     public getFormattedString(money : Money) {
         let result : string =
-            (this.symbolPosition === position.FRONT)
+            (this.symbolPosition === symbolPosition.FRONT)
                 ? (this.currencySymbol + this.symbolSeparator)
                 : '';
 
         result += money.isNegative() ? this.negSign : this.posSign;
         let integerPart : string = this.replaceDigits(money.getIntegerPart());
-        if (integerPart.length > this.groupSize && this.groupSeparator !== '') {
+        if (this.groupSize > 0 && integerPart.length > this.groupSize && this.groupSeparator !== '') {
             let index : number = 0;
             for (let i = Math.trunc((integerPart.length - 1) / this.groupSize); i > 0; i--) {
                 index = integerPart.length - this.groupSize * i;
@@ -188,7 +196,7 @@ export class MoneyFormatter {
             result += this.replaceDigits(money.getFractionalPart());
         }
 
-        if (this.symbolPosition === position.BACK)
+        if (this.symbolPosition === symbolPosition.BACK)
             result += this.symbolSeparator + this.currencySymbol;
 
 
@@ -222,7 +230,7 @@ export class MoneyFormatter {
      * @param position The position to put the currency symbol.
      * @brief Set whether to display the symbol in front of or behind the number.
      */
-    public setSymbolPosition(position : position) {
+    public setSymbolPosition(position : symbolPosition) {
         this.symbolPosition = position;
     }
     /**
@@ -232,4 +240,57 @@ export class MoneyFormatter {
     public setSymbolSeparator(separator : string) {
         this.symbolSeparator = separator;
     }
+    /**
+     * @param myriadMode Sets the active myriad mode.
+     * @description This sets the myriad mode, that controls the behaviour of the getFormattedMyriadString method.
+     */
+    public setMyriadMode(myriadMode : myriadMode) {
+        this.myriadMode = myriadMode;
+    }
+    /**
+     * @param symbol The currency symbol to use.
+     * @description This sets the symbol representing the currency, e.g. '$'. The string doesn't have to a single character.
+     * You could also pass 'dollar'.
+     */
+    public setCurrencySymbol(symbol : string) {
+        this.currencySymbol = symbol;
+    }
+    /**
+     * @param symbol The symbol to display in front of positive numbers.
+     * @description This sets the symbol to display in front of positive numbers. By default this is an empty string.
+     */
+    public setPositiveSign(symbol : string) {
+        this.posSign = symbol;
+    }
+    /**
+     * @param symbol The symbol to display in front of negative numbers.
+     * @description This sets the symbol to display in front of negative numbers. By default this is '-'.
+     */
+    public setNegativeSign(symbol : string) {
+        this.negSign = symbol;
+    }
+    /**
+     * @param symbol The symbol to put between the integer part and the fractional number part.
+     * @description This sets the symbol to put between the integer part and the fractional number part. Default is '.'.
+     */
+    public setDecimalSeparator(symbol : string) {
+        this.decimalSeparator = symbol;
+    }
+    /**
+     * @param size The amount of integer places to be grouped together.
+     * @description Often larger numbers get grouped into smaller sections, like 1,000,000 instead of 1000000. This sets
+     * the amount of characters that get grouped together. Default is 3.
+     */
+    public setGroupSize(size : number) {
+        this.groupSize = size;
+    }
+    /**
+     * @param symbol The character to group digits.
+     * @description Often larger numbers get grouped into smaller sections, like 1,000,000 instead of 1000000. This sets
+     * the the character used for that. Default is ','.
+     */
+    public setGroupSeparator(symbol : string) {
+        this.groupSeparator = symbol;
+    }
+
 }

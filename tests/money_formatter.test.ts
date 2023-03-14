@@ -1,5 +1,5 @@
 import {Money} from "../src/money";
-import {MoneyFormatter, position} from "../src/money_formatter";
+import {MoneyFormatter, myriadMode, symbolPosition} from "../src/money_formatter";
 
 describe('Money Formatter class', () => {
     describe('The private addDigits method', () => {
@@ -29,7 +29,7 @@ describe('Money Formatter class', () => {
         let formatter : MoneyFormatter = new MoneyFormatter();
         let money : Money = new Money('1000.00');
         it('should change the position of the currency symbol when formatting', () => {
-            formatter.setSymbolPosition(position.BACK);
+            formatter.setSymbolPosition(symbolPosition.BACK);
             money.setValue('-1');
             expect(formatter.getFormattedString(money)).toBe('-1 $');
         });
@@ -39,7 +39,7 @@ describe('Money Formatter class', () => {
         let money : Money = new Money('1000.00');
         it('should set the characters used for the digits', () => {
             formatter.setDigitCharacters(['○','一','二','三','四','五','六','七','八','九'])
-            formatter.setSymbolPosition(position.FRONT);
+            formatter.setSymbolPosition(symbolPosition.FRONT);
             money.setValue('1000.00');
             expect(formatter.getFormattedString(money)).toBe('$ 一,○○○.○○');
         });
@@ -54,7 +54,7 @@ describe('Money Formatter class', () => {
         let money : Money = new Money('1000.00');
         formatter.setSymbolSeparator('');
         expect(formatter.getFormattedString(money)).toBe('$1,000.00');
-        formatter.setSymbolPosition(position.BACK);
+        formatter.setSymbolPosition(symbolPosition.BACK);
         expect(formatter.getFormattedString(money)).toBe('1,000.00$');
     });
     describe('The getFormattedMyriadString method should', () => {
@@ -67,7 +67,7 @@ describe('Money Formatter class', () => {
     describe('The getFormattedMyriadString method should', () => {
         let formatter : MoneyFormatter = new MoneyFormatter();
         let money : Money = new Money('1500');
-        formatter.setSymbolPosition(position.BACK);
+        formatter.setSymbolPosition(symbolPosition.BACK);
         formatter.setSymbolSeparator('');
         it('should return the currency in a myriad format like in many east asian languages', () => {
             expect(formatter.getFormattedMyriadString(money)).toBe('千5百$');
@@ -113,7 +113,7 @@ describe('Money Formatter class', () => {
             expect(() => formatter.getFormattedMyriadString(money)).toThrowError();
             money.setValue('0');
             expect(formatter.getFormattedMyriadString(money)).toBe('0$');
-            formatter.setSymbolPosition(position.FRONT);
+            formatter.setSymbolPosition(symbolPosition.FRONT);
             expect(formatter.getFormattedMyriadString(money)).toBe('$0');
             money.setValue('10');
             expect(formatter.getFormattedMyriadString(money)).toBe('$十');
@@ -126,6 +126,14 @@ describe('Money Formatter class', () => {
         let money : Money = new Money('1000.00');
         it('should change the characters used by the myriad formatter', () => {
             formatter.setMyriadCharacters(['OOF','YIKES']);
+            expect(() => formatter.getFormattedMyriadString(money)).toThrowError();
+            money.setValue('54');
+            expect(formatter.getFormattedMyriadString(money)).toBe('$ 5OOF4');
+            money.setValue('254');
+            expect(formatter.getFormattedMyriadString(money)).toBe('$ 2YIKES5OOF4');
+            money.setValue('-254');
+            expect(formatter.getFormattedMyriadString(money)).toBe('$ -2YIKES5OOF4');
+            formatter.setMyriadMode(myriadMode.CHINESE);
             expect(() => formatter.getFormattedMyriadString(money)).toThrowError();
         });
     });
