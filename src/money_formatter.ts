@@ -10,7 +10,7 @@ export enum myriadMode {
     CHINESE
 }
 
-export enum negativeDisplayMode {
+export enum signDisplayMode {
     BEFORE,
     AFTER,
     BETWEEN,
@@ -43,8 +43,11 @@ export class MoneyFormatter {
     ];
     private decimalSeparator : string = '.';
     private groupSeparator : string = ',';
+    private signSeparator : string = '';
     private groupSize : number = 3;
-    private negativeDisplayMode : negativeDisplayMode = negativeDisplayMode.BEFORE;
+    private signDisplayMode : signDisplayMode = signDisplayMode.BEFORE;
+    private openingParenthesis : string = '(';
+    private closingParenthesis : string = ')';
 
     /**
      *
@@ -176,12 +179,23 @@ export class MoneyFormatter {
      * @brief Formats the value depending on the current state of the formatter.
      */
     public getFormattedString(money : Money) {
-        let result : string =
-            (this.symbolPosition === symbolPosition.FRONT)
-                ? (this.currencySymbol + this.symbolSeparator)
-                : '';
+        let result : string = '';
+        const isNegative : boolean = money.isNegative();
+        const sign : string = isNegative ? this.negSign : this.posSign;
 
-        result += money.isNegative() ? this.negSign : this.posSign;
+        if (this.signDisplayMode === signDisplayMode.BEFORE) {
+            if (sign !== '') result += sign + this.signSeparator;
+            if (this.symbolPosition === symbolPosition.FRONT && this.currencySymbol !== '') result += this.currencySymbol + this.symbolSeparator;
+        } else if (this.signDisplayMode === signDisplayMode.BETWEEN && this.symbolPosition === symbolPosition.FRONT && this.currencySymbol !== '') {
+            result += this.currencySymbol + this.symbolSeparator;
+            if (sign !== '') result += sign + this.signSeparator;
+        } else if (this.signDisplayMode === signDisplayMode.PARENTHESES) {
+            if (isNegative) result += this.openingParenthesis + this.signSeparator;
+            if (this.symbolPosition === symbolPosition.FRONT && this.currencySymbol !== '') result += this.currencySymbol + this.symbolSeparator;
+        } else if (this.signDisplayMode === signDisplayMode.AFTER && this.symbolPosition === symbolPosition.FRONT && this.currencySymbol !== '') {
+            result += this.currencySymbol + this.symbolSeparator;
+        }
+
         let integerPart : string = this.replaceDigits(money.getIntegerPart());
         if (this.groupSize > 0 && integerPart.length > this.groupSize && this.groupSeparator !== '') {
             let index : number = 0;
@@ -196,8 +210,19 @@ export class MoneyFormatter {
             result += this.replaceDigits(money.getFractionalPart());
         }
 
-        if (this.symbolPosition === symbolPosition.BACK)
+        if (this.signDisplayMode === signDisplayMode.BETWEEN && this.symbolPosition === symbolPosition.BACK && this.currencySymbol !== '') {
+            if (sign !== '') result += this.signSeparator + sign;
+            if (this.currencySymbol !== '') result += this.symbolSeparator + this.currencySymbol;
+        } else if (this.signDisplayMode === signDisplayMode.AFTER) {
+            if (this.symbolPosition === symbolPosition.BACK && this.currencySymbol !== '') result += this.symbolSeparator + this.currencySymbol;
+            if (sign !== '') result += this.signSeparator + sign;
+        } else if (this.signDisplayMode === signDisplayMode.PARENTHESES) {
+            if (this.symbolPosition === symbolPosition.BACK && this.currencySymbol !== '') result += this.symbolSeparator + this.currencySymbol;
+            if (isNegative) result += this.signSeparator + this.closingParenthesis;
+        } else if (this.signDisplayMode === signDisplayMode.BEFORE && this.symbolPosition === symbolPosition.BACK && this.currencySymbol !== '') {
             result += this.symbolSeparator + this.currencySymbol;
+        }
+
 
 
 
@@ -221,10 +246,10 @@ export class MoneyFormatter {
      * @description The amount of characters you pass inside the array determines the largest value you can format to a
      * myriad string. The following shows the the meaning of the character for each index of the array:
      * [0]=10,[1]=100,[2]=1000,[3]=10^4^,[4]=10^8^,[5]=10^12^, ... This means that if you pass in an array of length 1 you
-     * can only formats values up to 99 (e.g. 九十九 in Japanese).
+     * can only format values up to 99 (e.g. 九十九 in Japanese).
      */
     public setMyriadCharacters(characters : string[]) {
-        this.myriadCharacters = characters;
+        this.myriadCharacters = characters.slice(0);
     }
     /**
      * @param position The position to put the currency symbol.
@@ -282,6 +307,8 @@ export class MoneyFormatter {
      * the amount of characters that get grouped together. Default is 3.
      */
     public setGroupSize(size : number) {
+        if (!Number.isInteger(size) || size < 0)
+            throw new Error('Size should be a positive integer.');
         this.groupSize = size;
     }
     /**
@@ -291,6 +318,92 @@ export class MoneyFormatter {
      */
     public setGroupSeparator(symbol : string) {
         this.groupSeparator = symbol;
+    }
+    /**
+     * @param mode The way to display the sign
+     * @description BEFORE = Display the sign before the number and the symbol;
+     * AFTER = Display the sign after the number and the symbol;
+     * BETWEEN = Display the sign between the number and the symbol (depends on where the symbol is);
+     * PARENTHESES = Ignore sign symbols and wrap negative amounts in parentheses;
+     */
+    public setSignDisplayMode(mode : signDisplayMode) {
+        this.signDisplayMode = mode;
+    }
+
+    /**
+     * @param symbol The symbol to display between the sign (pos/neg) and the number or currency symbol depending on display mode.
+     * Default is an empty string.
+     */
+    public setSignSeparator(symbol : string) : void {
+        this.signSeparator = symbol;
+    }
+
+    public setOpeningParenthesis(symbol : string) {
+        this.openingParenthesis = symbol;
+    }
+
+    public setClosingParenthesis(symbol : string) {
+        this.closingParenthesis = symbol;
+    }
+
+    public getCurrencySymbol() : string {
+        return this.currencySymbol;
+    }
+
+    public getSymbolPosition() : symbolPosition {
+        return this.symbolPosition;
+    }
+
+    public getSymbolSeparator() : string {
+        return this.symbolSeparator;
+    }
+
+    public getPosSign() : string {
+        return this.posSign;
+    }
+
+    public getNegSign() : string {
+        return this.negSign;
+    }
+
+    public getDigitCharacters() : string[] {
+        return this.digitCharacters.slice(0);
+    }
+
+    public getMyriadMode() : myriadMode {
+        return this.myriadMode;
+    }
+
+    public getMyriadCharacters() : string[] {
+        return this.myriadCharacters.slice(0);
+    }
+
+    public getDecimalSeparator() : string {
+        return this.decimalSeparator;
+    }
+
+    public getGroupSeparator() : string {
+        return this.groupSeparator;
+    }
+
+    public getGroupSize() : number {
+        return this.groupSize;
+    }
+
+    public getSignDisplayMode() : signDisplayMode {
+        return this.signDisplayMode;
+    }
+
+    public getSignSeparator() : string {
+        return this.signSeparator;
+    }
+
+    public getOpeningParenthesis() : string {
+        return this.openingParenthesis;
+    }
+
+    public getClosingParenthesis() : string {
+        return this.closingParenthesis;
     }
 
 }

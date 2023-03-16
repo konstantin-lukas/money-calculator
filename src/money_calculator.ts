@@ -1,20 +1,12 @@
 import {Money} from "./money";
 
-enum roundingMode {
-    FLOOR,
-    CEIL,
-    TRUNC
-}
-
 export class MoneyCalculator {
-    private roundingMode : roundingMode = roundingMode.FLOOR;
-
     /**
      * @param digit1
      * @param digit2
      * @param carry
      * @private
-     * @description Adds two numbers and returns the result as well as the resulting carry bit in a tuple.
+     * @description Adds two number digit strings and returns the result as well as the resulting carry bit in a tuple.
      */
     private static addDigits(digit1 : string, digit2 : string, carry : boolean) : [string, boolean] {
         if (!/^\d$/.test(digit1) || !/^\d$/.test(digit2))

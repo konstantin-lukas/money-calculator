@@ -1,5 +1,5 @@
 import {Money} from "../src/money";
-import {MoneyFormatter, myriadMode, symbolPosition} from "../src/money_formatter";
+import {MoneyFormatter, myriadMode, signDisplayMode, symbolPosition} from "../src/money_formatter";
 
 describe('Money Formatter class', () => {
     describe('The private addDigits method', () => {
@@ -20,9 +20,9 @@ describe('Money Formatter class', () => {
             money.setValue('1000000000.00');
             expect(formatter.getFormattedString(money)).toBe('$ 1,000,000,000.00');
             money.setValue('-1.00');
-            expect(formatter.getFormattedString(money)).toBe('$ -1.00');
+            expect(formatter.getFormattedString(money)).toBe('-$ 1.00');
             money.setValue('-1');
-            expect(formatter.getFormattedString(money)).toBe('$ -1');
+            expect(formatter.getFormattedString(money)).toBe('-$ 1');
         });
     });
     describe('The setSymbol method', () => {
@@ -136,5 +136,165 @@ describe('Money Formatter class', () => {
             formatter.setMyriadMode(myriadMode.CHINESE);
             expect(() => formatter.getFormattedMyriadString(money)).toThrowError();
         });
+    });
+    describe('The setSignDisplayMode method', () => {
+        let formatter : MoneyFormatter = new MoneyFormatter();
+        let money : Money = new Money('-999.99');
+        it('should change the state of the object to mode "BEFORE" ', () => {
+            formatter.setSignDisplayMode(signDisplayMode.BEFORE);
+            expect(formatter.getFormattedString(money)).toBe('-$ 999.99');
+            formatter.setSignDisplayMode(signDisplayMode.AFTER);
+            expect(formatter.getFormattedString(money)).toBe('$ 999.99-');
+            formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
+            expect(formatter.getFormattedString(money)).toBe('($ 999.99)');
+            formatter.setSignDisplayMode(signDisplayMode.BETWEEN);
+            expect(formatter.getFormattedString(money)).toBe('$ -999.99');
+
+            formatter.setSymbolPosition(symbolPosition.BACK);
+            expect(formatter.getFormattedString(money)).toBe('999.99- $');
+            formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
+            expect(formatter.getFormattedString(money)).toBe('(999.99 $)');
+            formatter.setSignDisplayMode(signDisplayMode.AFTER);
+            expect(formatter.getFormattedString(money)).toBe('999.99 $-');
+            formatter.setSignDisplayMode(signDisplayMode.BEFORE);
+            expect(formatter.getFormattedString(money)).toBe('-999.99 $');
+
+            money.makeNegative(false);
+
+            formatter.setSymbolPosition(symbolPosition.FRONT);
+            formatter.setSignDisplayMode(signDisplayMode.BEFORE);
+            expect(formatter.getFormattedString(money)).toBe('$ 999.99');
+            formatter.setSignDisplayMode(signDisplayMode.AFTER);
+            expect(formatter.getFormattedString(money)).toBe('$ 999.99');
+            formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
+            expect(formatter.getFormattedString(money)).toBe('$ 999.99');
+            formatter.setSignDisplayMode(signDisplayMode.BETWEEN);
+            expect(formatter.getFormattedString(money)).toBe('$ 999.99');
+
+            formatter.setSymbolPosition(symbolPosition.BACK);
+            expect(formatter.getFormattedString(money)).toBe('999.99 $');
+            formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
+            expect(formatter.getFormattedString(money)).toBe('999.99 $');
+            formatter.setSignDisplayMode(signDisplayMode.AFTER);
+            expect(formatter.getFormattedString(money)).toBe('999.99 $');
+            formatter.setSignDisplayMode(signDisplayMode.BEFORE);
+            expect(formatter.getFormattedString(money)).toBe('999.99 $');
+
+            formatter.setCurrencySymbol('');
+            formatter.setSymbolPosition(symbolPosition.FRONT);
+            formatter.setSignDisplayMode(signDisplayMode.BEFORE);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+            formatter.setSignDisplayMode(signDisplayMode.AFTER);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+            formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+            formatter.setSignDisplayMode(signDisplayMode.BETWEEN);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+
+            formatter.setSymbolPosition(symbolPosition.BACK);
+            formatter.setSignDisplayMode(signDisplayMode.BEFORE);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+            formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+            formatter.setSignDisplayMode(signDisplayMode.AFTER);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+            formatter.setSignDisplayMode(signDisplayMode.BETWEEN);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+
+            formatter.setPositiveSign('+');
+
+            formatter.setSignDisplayMode(signDisplayMode.BEFORE);
+            expect(formatter.getFormattedString(money)).toBe('+999.99');
+            formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+            formatter.setSignDisplayMode(signDisplayMode.AFTER);
+            expect(formatter.getFormattedString(money)).toBe('999.99+');
+            formatter.setSignDisplayMode(signDisplayMode.BETWEEN);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+
+            money.makeNegative(true);
+            formatter.setSymbolPosition(symbolPosition.FRONT);
+            formatter.setSignDisplayMode(signDisplayMode.BEFORE);
+            expect(formatter.getFormattedString(money)).toBe('-999.99');
+            formatter.setSignDisplayMode(signDisplayMode.AFTER);
+            expect(formatter.getFormattedString(money)).toBe('999.99-');
+            formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
+            expect(formatter.getFormattedString(money)).toBe('(999.99)');
+            formatter.setSignDisplayMode(signDisplayMode.BETWEEN);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+
+            formatter.setNegativeSign('');
+            formatter.setSignDisplayMode(signDisplayMode.BEFORE);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+            formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
+            expect(formatter.getFormattedString(money)).toBe('(999.99)');
+            formatter.setSignDisplayMode(signDisplayMode.AFTER);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+            formatter.setSignDisplayMode(signDisplayMode.BETWEEN);
+            expect(formatter.getFormattedString(money)).toBe('999.99');
+
+            formatter.setSignSeparator(' ');
+            money.makeNegative(true);
+            formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
+            expect(formatter.getFormattedString(money)).toBe('( 999.99 )');
+            money.setValue('-1999.9999');
+            expect(formatter.getFormattedString(money)).toBe('( 1,999.9999 )');
+        });
+    });
+    describe('The setter methods', () => {
+        let formatter : MoneyFormatter = new MoneyFormatter();
+        let money : Money = new Money('-9999.99');
+        it('should have an impact on formatting in at least one scenario', () => {
+            expect(formatter.getFormattedString(money)).toBe('-$ 9,999.99');
+            formatter.setDecimalSeparator(',');
+            expect(formatter.getFormattedString(money)).toBe('-$ 9,999,99');
+            expect(() => formatter.setGroupSize(-1)).toThrowError();
+            formatter.setGroupSize(1);
+            expect(formatter.getFormattedString(money)).toBe('-$ 9,9,9,9,99');
+            formatter.setGroupSeparator('.');
+            expect(formatter.getFormattedString(money)).toBe('-$ 9.9.9.9,99');
+            formatter.setOpeningParenthesis('[');
+            formatter.setClosingParenthesis(']');
+            formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
+            expect(formatter.getFormattedString(money)).toBe('[$ 9.9.9.9,99]');
+        });
+    });
+    describe('The getter methods', () => {
+        let formatter : MoneyFormatter = new MoneyFormatter();
+        it('should return the respective private member', () => {
+            expect(formatter.getCurrencySymbol()).toBe('$');
+            expect(formatter.getDecimalSeparator()).toBe('.');
+            expect(formatter.getDigitCharacters()).toEqual(['0','1','2','3','4','5','6','7','8','9']);
+            expect(formatter.getDigitCharacters()).not.toBe(formatter['digitCharacters']);
+            expect(formatter.getMyriadCharacters()).toEqual([
+                '十', // 10
+                '百', // 100
+                '千', // 1,000
+                '万', // 10,000 : STARTING AFTER THIS ONE, EACH SYMBOL IS 10,000 TIMES THE PREVIOUS ONE
+                '億', // 10^8
+                '兆', // 10^12
+                '京', // 10^16
+                '垓', // 10^20
+                '𥝱',// 10^24
+                '穣', // 10^28
+                '溝', // 10^32
+                '澗', // 10^36
+                '正', // 10^40
+                '載', // 10^44
+            ]);
+            expect(formatter.getMyriadCharacters()).not.toBe(formatter['myriadCharacters']);
+            expect(formatter.getGroupSeparator()).toBe(',');
+            expect(formatter.getGroupSize()).toBe(3);
+            expect(formatter.getOpeningParenthesis()).toBe('(');
+            expect(formatter.getClosingParenthesis()).toBe(')');
+            expect(formatter.getNegSign()).toBe('-');
+            expect(formatter.getPosSign()).toBe('');
+            expect(formatter.getSignDisplayMode()).toBe(signDisplayMode.BEFORE);
+            expect(formatter.getSignSeparator()).toBe('');
+            expect(formatter.getSymbolSeparator()).toBe(' ');
+            expect(formatter.getSymbolPosition()).toBe(symbolPosition.FRONT);
+            expect(formatter.getMyriadMode()).toBe(myriadMode.JAPANESE);
+        });
+
     });
 });

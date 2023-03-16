@@ -35,15 +35,15 @@ describe('Money class', () => {
         it('should handle the EN_US preset', () => {
             money.setValue('251.2512');
             formatter = FormatterFactory.getFormatter(preset.EN_US);
-            expect(formatter.getFormattedString(money)).toBe('$ 251.2512');
+            expect(formatter.getFormattedString(money)).toBe('$251.2512');
             money.setValue('100000000');
-            expect(formatter.getFormattedString(money)).toBe('$ 100,000,000');
+            expect(formatter.getFormattedString(money)).toBe('$100,000,000');
             money.setValue('-100000000.00');
-            expect(formatter.getFormattedString(money)).toBe('$ -100,000,000.00');
+            expect(formatter.getFormattedString(money)).toBe('($100,000,000.00)');
             formatter.setGroupSize(0);
-            expect(formatter.getFormattedString(money)).toBe('$ -100000000.00');
+            expect(formatter.getFormattedString(money)).toBe('($100000000.00)');
             money.setValue('-0');
-            expect(formatter.getFormattedMyriadString(money)).toBe('$ 0');
+            expect(formatter.getFormattedMyriadString(money)).toBe('$0');
         });
     });
 });

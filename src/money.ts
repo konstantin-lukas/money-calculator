@@ -98,7 +98,7 @@ export class Money {
         this.negative = sign;
     }
     /**
-     * @description Returns true if the value held is equal to 0, i.e. 0.00 or 0.000 etc.
+     * @description Returns true iff the value held is equal to 0, i.e. 0.00 or 0.000 etc.
      */
     public isNull() : boolean {
         return /^[0]+$/.test(this.integerPart) && /^[0]*$/.test(this.fractionalPart);

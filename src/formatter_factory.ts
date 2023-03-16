@@ -1,4 +1,4 @@
-import {MoneyFormatter, myriadMode, symbolPosition} from "./money_formatter";
+import {MoneyFormatter, myriadMode, signDisplayMode, symbolPosition} from "./money_formatter";
 
 export enum preset {
     EN_US,
@@ -42,13 +42,16 @@ export class FormatterFactory {
             case preset.EN_US:
                 formatter.setDigitCharacters(['0','1','2','3','4','5','6','7','8','9']);
                 formatter.setSymbolPosition(symbolPosition.FRONT);
-                formatter.setSymbolSeparator(' ');
+                formatter.setSymbolSeparator('');
                 formatter.setCurrencySymbol('$');
                 formatter.setNegativeSign('-');
                 formatter.setPositiveSign('');
                 formatter.setDecimalSeparator('.');
                 formatter.setGroupSeparator(',');
                 formatter.setGroupSize(3);
+                formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
+                formatter.setOpeningParenthesis('(');
+                formatter.setClosingParenthesis(')');
                 break;
             default:
                 throw new Error('Provided preset is not supported');
