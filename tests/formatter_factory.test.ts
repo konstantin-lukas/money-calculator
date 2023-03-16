@@ -10,7 +10,7 @@ describe('Money class', () => {
             expect(() => formatter = FormatterFactory.getFormatter(-1)).toThrowError();
         });
         it('should handle the JA_PURE preset', () => {
-            formatter = FormatterFactory.getFormatter(preset.JA_PURE);
+            formatter = FormatterFactory.getFormatter(preset.JPY_PURE);
             expect(formatter.getFormattedString(money)).toBe('二五一．二五一二円');
             expect(() => formatter.getFormattedMyriadString(money)).toThrowError();
             money.setValue('100500000');
@@ -22,7 +22,7 @@ describe('Money class', () => {
         });
         it('should handle the JA_MIXED preset', () => {
             money.setValue('251.2512');
-            formatter = FormatterFactory.getFormatter(preset.JA_MIXED);
+            formatter = FormatterFactory.getFormatter(preset.JPY_MIXED);
             expect(formatter.getFormattedString(money)).toBe('２５１．２５１２円');
             expect(() => formatter.getFormattedMyriadString(money)).toThrowError();
             money.setValue('100500000');
@@ -44,6 +44,19 @@ describe('Money class', () => {
             expect(formatter.getFormattedString(money)).toBe('($100000000.00)');
             money.setValue('-0');
             expect(formatter.getFormattedMyriadString(money)).toBe('$0');
+        });
+        it('should handle the EUR preset', () => {
+            money.setValue('251.2512');
+            formatter = FormatterFactory.getFormatter(preset.EUR);
+            expect(formatter.getFormattedString(money)).toBe('251,2512 €');
+            money.setValue('100000000');
+            expect(formatter.getFormattedString(money)).toBe('100.000.000 €');
+            money.setValue('-100000000.00');
+            expect(formatter.getFormattedString(money)).toBe('(100.000.000,00 €)');
+            formatter.setGroupSize(0);
+            expect(formatter.getFormattedString(money)).toBe('(100000000,00 €)');
+            money.setValue('-0');
+            expect(formatter.getFormattedMyriadString(money)).toBe('0 €');
         });
     });
 });
