@@ -18,14 +18,20 @@ export enum signDisplayMode {
 }
 
 export class MoneyFormatter {
-    private currencySymbol : string = '$';
-    private symbolPosition : symbolPosition = symbolPosition.FRONT;
-    private symbolSeparator : string = ' ';
-    private posSign : string = '';
-    private negSign : string = '-';
-    private digitCharacters : string[] = ['0','1','2','3','4','5','6','7','8','9'];
-    private myriadMode : myriadMode = myriadMode.JAPANESE;
-    private myriadCharacters : string[] = [
+    private _currencySymbol : string = '$';
+    private _symbolPosition : symbolPosition = symbolPosition.FRONT;
+    private _symbolSeparator : string = ' ';
+
+    // TODO
+    private _currencyName : string = 'USD';
+    private _namePosition : symbolPosition = symbolPosition.BACK;
+    private _nameSeparator : string = ' ';
+
+    private _posSign : string = '';
+    private _negSign : string = '-';
+    private _digitCharacters : string[] = ['0','1','2','3','4','5','6','7','8','9'];
+    private _myriadMode : myriadMode = myriadMode.JAPANESE;
+    private _myriadCharacters : string[] = [
         '十', // 10
         '百', // 100
         '千', // 1,000
@@ -41,13 +47,13 @@ export class MoneyFormatter {
         '正', // 10^40
         '載', // 10^44
     ];
-    private decimalSeparator : string = '.';
-    private groupSeparator : string = ',';
-    private signSeparator : string = '';
-    private groupSize : number = 3;
-    private signDisplayMode : signDisplayMode = signDisplayMode.BEFORE;
-    private openingParenthesis : string = '(';
-    private closingParenthesis : string = ')';
+    private _decimalSeparator : string = '.';
+    private _groupSeparator : string = ',';
+    private _signSeparator : string = '';
+    private _groupSize : number = 3;
+    private _signDisplayMode : signDisplayMode = signDisplayMode.BEFORE;
+    private _openingParenthesis : string = '(';
+    private _closingParenthesis : string = ')';
 
     /**
      *
@@ -70,42 +76,42 @@ export class MoneyFormatter {
             switch (i) {
                 case 0: // 0 - 9
                     if (digit !== 0)
-                        result = this.digitCharacters[digit] + result;
+                        result = this._digitCharacters[digit] + result;
                     break;
                 case 1: // 10
                 case 2: // 100
                 case 3: // 1000
                     if (digit !== 0) {
                         if (digit === 1)
-                            result = this.myriadCharacters[i - 1] + result;
+                            result = this._myriadCharacters[i - 1] + result;
                         else
-                            result = this.digitCharacters[digit] + this.myriadCharacters[i - 1] + result;
+                            result = this._digitCharacters[digit] + this._myriadCharacters[i - 1] + result;
                     }
                     break;
                 case 4: // 10000
                     if (digit !== 0)
-                        result = this.digitCharacters[digit] + this.myriadCharacters[i - 1] + result;
+                        result = this._digitCharacters[digit] + this._myriadCharacters[i - 1] + result;
                     else if (nextThreeDigitsContainNonZeroDigit)
-                        result = this.myriadCharacters[Math.trunc(i / 4) + 2] + result;
+                        result = this._myriadCharacters[Math.trunc(i / 4) + 2] + result;
                     break;
                 default:
                     if (i % 4 === 0) {
                         if (digit !== 0)
-                            result = this.digitCharacters[digit] + this.myriadCharacters[Math.trunc(i / 4) + 2] + result;
+                            result = this._digitCharacters[digit] + this._myriadCharacters[Math.trunc(i / 4) + 2] + result;
                         else if (nextThreeDigitsContainNonZeroDigit)
-                            result = this.myriadCharacters[Math.trunc(i / 4) + 2] + result;
+                            result = this._myriadCharacters[Math.trunc(i / 4) + 2] + result;
                     } else if (i % 4 === 1 && digit !== 0) {
                         if (digit === 1)
-                            result = this.myriadCharacters[0] + result;
+                            result = this._myriadCharacters[0] + result;
                         else
-                            result = this.digitCharacters[digit] + this.myriadCharacters[0] + result;
+                            result = this._digitCharacters[digit] + this._myriadCharacters[0] + result;
                     } else if (i % 4 === 2 && digit !== 0) {
                         if (digit === 1)
-                            result = this.myriadCharacters[1] + result;
+                            result = this._myriadCharacters[1] + result;
                         else
-                            result = this.digitCharacters[digit] + this.myriadCharacters[1] + result;
+                            result = this._digitCharacters[digit] + this._myriadCharacters[1] + result;
                     } else if (i % 4 === 3 && digit !== 0) {
-                        result = this.digitCharacters[digit] + this.myriadCharacters[2] + result;
+                        result = this._digitCharacters[digit] + this._myriadCharacters[2] + result;
                     }
                     break;
             }
@@ -121,16 +127,16 @@ export class MoneyFormatter {
      * @brief Replaces all digits in a string with the characters assigned in the formatter.
      */
     private replaceDigits(string : string) : string {
-        string = string.replace(/[0]/g, this.digitCharacters[0]);
-        string = string.replace(/[1]/g, this.digitCharacters[1]);
-        string = string.replace(/[2]/g, this.digitCharacters[2]);
-        string = string.replace(/[3]/g, this.digitCharacters[3]);
-        string = string.replace(/[4]/g, this.digitCharacters[4]);
-        string = string.replace(/[5]/g, this.digitCharacters[5]);
-        string = string.replace(/[6]/g, this.digitCharacters[6]);
-        string = string.replace(/[7]/g, this.digitCharacters[7]);
-        string = string.replace(/[8]/g, this.digitCharacters[8]);
-        string = string.replace(/[9]/g, this.digitCharacters[9]);
+        string = string.replace(/[0]/g, this._digitCharacters[0]);
+        string = string.replace(/[1]/g, this._digitCharacters[1]);
+        string = string.replace(/[2]/g, this._digitCharacters[2]);
+        string = string.replace(/[3]/g, this._digitCharacters[3]);
+        string = string.replace(/[4]/g, this._digitCharacters[4]);
+        string = string.replace(/[5]/g, this._digitCharacters[5]);
+        string = string.replace(/[6]/g, this._digitCharacters[6]);
+        string = string.replace(/[7]/g, this._digitCharacters[7]);
+        string = string.replace(/[8]/g, this._digitCharacters[8]);
+        string = string.replace(/[9]/g, this._digitCharacters[9]);
         return string;
     }
     /**
@@ -138,22 +144,22 @@ export class MoneyFormatter {
      * @description Formats the value to a myriad format string like in many east Asian languages. Use setMyriadMode() method
      * to change behaviour.
      */
-    public getFormattedMyriadString(money : Money) : string {
-        if (money.getFloatingPointPrecision() !== 0)
+    public formatMyriad(money : Money) : string {
+        if (money.floatingPointPrecision !== 0)
             throw new Error('Only values without decimals are supported for conversion to myriad system.');
-        let moneyString : string = money.getIntegerPart();
+        let moneyString : string = money.integerPart;
 
-        if (this.myriadCharacters.length <= 4 && moneyString.length !== 1 && this.myriadCharacters.length < moneyString.length - 1
-            || this.myriadCharacters.length > 4 && this.myriadCharacters.length < 3 + Math.trunc((moneyString.length - 1) / 4))
+        if (this._myriadCharacters.length <= 4 && moneyString.length !== 1 && this._myriadCharacters.length < moneyString.length - 1
+            || this._myriadCharacters.length > 4 && this._myriadCharacters.length < 3 + Math.trunc((moneyString.length - 1) / 4))
             throw new Error('Not enough characters defined to print myriad string. Use setMyriadCharacters to define more characters.');
 
         let result : string = '';
 
         if (moneyString.length === 1) {
-            result = this.digitCharacters[parseInt(moneyString)];
+            result = this._digitCharacters[parseInt(moneyString)];
         } else {
             moneyString = moneyString.split("").reverse().join("");
-            if (this.myriadMode === myriadMode.JAPANESE) {
+            if (this._myriadMode === myriadMode.JAPANESE) {
                 result = this.handleJapaneseMyriad(moneyString);
             } else {
                 throw new Error('Provided myriad mode not supported.');
@@ -163,14 +169,14 @@ export class MoneyFormatter {
 
 
 
-        result = (money.isNegative() ? this.negSign : this.posSign) + result;
+        result = (money.isNegative ? this._negSign : this._posSign) + result;
 
 
 
-        if (this.symbolPosition === symbolPosition.BACK)
-            result += this.symbolSeparator + this.currencySymbol;
-        else if (this.symbolPosition === symbolPosition.FRONT)
-            result = this.currencySymbol + this.symbolSeparator + result;
+        if (this._symbolPosition === symbolPosition.BACK)
+            result += this._symbolSeparator + this._currencySymbol;
+        else if (this._symbolPosition === symbolPosition.FRONT)
+            result = this._currencySymbol + this._symbolSeparator + result;
         return result;
 
     }
@@ -178,49 +184,49 @@ export class MoneyFormatter {
      * @param money The value to format.
      * @brief Formats the value depending on the current state of the formatter.
      */
-    public getFormattedString(money : Money) {
+    public format(money : Money) {
         let result : string = '';
-        const isNegative : boolean = money.isNegative();
-        const sign : string = isNegative ? this.negSign : this.posSign;
+        const isNegative : boolean = money.isNegative;
+        const sign : string = isNegative ? this._negSign : this._posSign;
 
-        if (this.signDisplayMode === signDisplayMode.BEFORE) {
-            if (sign !== '') result += sign + this.signSeparator;
-            if (this.symbolPosition === symbolPosition.FRONT && this.currencySymbol !== '') result += this.currencySymbol + this.symbolSeparator;
-        } else if (this.signDisplayMode === signDisplayMode.BETWEEN && this.symbolPosition === symbolPosition.FRONT && this.currencySymbol !== '') {
-            result += this.currencySymbol + this.symbolSeparator;
-            if (sign !== '') result += sign + this.signSeparator;
-        } else if (this.signDisplayMode === signDisplayMode.PARENTHESES) {
-            if (isNegative) result += this.openingParenthesis + this.signSeparator;
-            if (this.symbolPosition === symbolPosition.FRONT && this.currencySymbol !== '') result += this.currencySymbol + this.symbolSeparator;
-        } else if (this.signDisplayMode === signDisplayMode.AFTER && this.symbolPosition === symbolPosition.FRONT && this.currencySymbol !== '') {
-            result += this.currencySymbol + this.symbolSeparator;
+        if (this._signDisplayMode === signDisplayMode.BEFORE) {
+            if (sign !== '') result += sign + this._signSeparator;
+            if (this._symbolPosition === symbolPosition.FRONT && this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
+        } else if (this._signDisplayMode === signDisplayMode.BETWEEN && this._symbolPosition === symbolPosition.FRONT && this._currencySymbol !== '') {
+            result += this._currencySymbol + this._symbolSeparator;
+            if (sign !== '') result += sign + this._signSeparator;
+        } else if (this._signDisplayMode === signDisplayMode.PARENTHESES) {
+            if (isNegative) result += this._openingParenthesis + this._signSeparator;
+            if (this._symbolPosition === symbolPosition.FRONT && this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
+        } else if (this._signDisplayMode === signDisplayMode.AFTER && this._symbolPosition === symbolPosition.FRONT && this._currencySymbol !== '') {
+            result += this._currencySymbol + this._symbolSeparator;
         }
 
-        let integerPart : string = this.replaceDigits(money.getIntegerPart());
-        if (this.groupSize > 0 && integerPart.length > this.groupSize && this.groupSeparator !== '') {
+        let integerPart : string = this.replaceDigits(money.integerPart);
+        if (this._groupSize > 0 && integerPart.length > this._groupSize && this._groupSeparator !== '') {
             let index : number = 0;
-            for (let i = Math.trunc((integerPart.length - 1) / this.groupSize); i > 0; i--) {
-                index = integerPart.length - this.groupSize * i;
-                integerPart = integerPart.slice(0, index) + this.groupSeparator + integerPart.slice(index);
+            for (let i = Math.trunc((integerPart.length - 1) / this._groupSize); i > 0; i--) {
+                index = integerPart.length - this._groupSize * i;
+                integerPart = integerPart.slice(0, index) + this._groupSeparator + integerPart.slice(index);
             }
         }
         result += integerPart;
-        if (money.getFloatingPointPrecision() > 0) {
-            result += this.decimalSeparator;
-            result += this.replaceDigits(money.getFractionalPart());
+        if (money.floatingPointPrecision > 0) {
+            result += this._decimalSeparator;
+            result += this.replaceDigits(money.fractionalPart);
         }
 
-        if (this.signDisplayMode === signDisplayMode.BETWEEN && this.symbolPosition === symbolPosition.BACK && this.currencySymbol !== '') {
-            if (sign !== '') result += this.signSeparator + sign;
-            if (this.currencySymbol !== '') result += this.symbolSeparator + this.currencySymbol;
-        } else if (this.signDisplayMode === signDisplayMode.AFTER) {
-            if (this.symbolPosition === symbolPosition.BACK && this.currencySymbol !== '') result += this.symbolSeparator + this.currencySymbol;
-            if (sign !== '') result += this.signSeparator + sign;
-        } else if (this.signDisplayMode === signDisplayMode.PARENTHESES) {
-            if (this.symbolPosition === symbolPosition.BACK && this.currencySymbol !== '') result += this.symbolSeparator + this.currencySymbol;
-            if (isNegative) result += this.signSeparator + this.closingParenthesis;
-        } else if (this.signDisplayMode === signDisplayMode.BEFORE && this.symbolPosition === symbolPosition.BACK && this.currencySymbol !== '') {
-            result += this.symbolSeparator + this.currencySymbol;
+        if (this._signDisplayMode === signDisplayMode.BETWEEN && this._symbolPosition === symbolPosition.BACK && this._currencySymbol !== '') {
+            if (sign !== '') result += this._signSeparator + sign;
+            if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
+        } else if (this._signDisplayMode === signDisplayMode.AFTER) {
+            if (this._symbolPosition === symbolPosition.BACK && this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
+            if (sign !== '') result += this._signSeparator + sign;
+        } else if (this._signDisplayMode === signDisplayMode.PARENTHESES) {
+            if (this._symbolPosition === symbolPosition.BACK && this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
+            if (isNegative) result += this._signSeparator + this._closingParenthesis;
+        } else if (this._signDisplayMode === signDisplayMode.BEFORE && this._symbolPosition === symbolPosition.BACK && this._currencySymbol !== '') {
+            result += this._symbolSeparator + this._currencySymbol;
         }
 
 
@@ -234,11 +240,11 @@ export class MoneyFormatter {
      * If you pass ['NULL','1','2','3','4','5','6','7','8','9'] as the parameter for instance, 105$ will be printed as
      * 1NULL5$.
      */
-    public setDigitCharacters(digits : string[]) : void {
+    set digitCharacters(digits : string[]) {
         if (digits.length !== 10)
             throw new Error('10 digits need to passed as a string array.');
         for (let i = 0; i < digits.length; i++) {
-            this.digitCharacters[i] = digits[i];
+            this._digitCharacters[i] = digits[i];
         }
     }
     /**
@@ -248,76 +254,76 @@ export class MoneyFormatter {
      * [0]=10,[1]=100,[2]=1000,[3]=10^4^,[4]=10^8^,[5]=10^12^, ... This means that if you pass in an array of length 1 you
      * can only format values up to 99 (e.g. 九十九 in Japanese).
      */
-    public setMyriadCharacters(characters : string[]) {
-        this.myriadCharacters = characters.slice(0);
+    set myriadCharacters(characters : string[]) {
+        this._myriadCharacters = characters.slice(0);
     }
     /**
      * @param position The position to put the currency symbol.
      * @brief Set whether to display the symbol in front of or behind the number.
      */
-    public setSymbolPosition(position : symbolPosition) {
-        this.symbolPosition = position;
+    set symbolPosition(position : symbolPosition) {
+        this._symbolPosition = position;
     }
     /**
      * @param separator The characters that separate the numbers from the currency symbol.
      * @brief Set the characters that separate the numbers from the currency symbol. Defaults to a simple space.
      */
-    public setSymbolSeparator(separator : string) {
-        this.symbolSeparator = separator;
+    set symbolSeparator(separator : string) {
+        this._symbolSeparator = separator;
     }
     /**
      * @param myriadMode Sets the active myriad mode.
      * @description This sets the myriad mode, that controls the behaviour of the getFormattedMyriadString method.
      */
-    public setMyriadMode(myriadMode : myriadMode) {
-        this.myriadMode = myriadMode;
+    set myriadMode(myriadMode : myriadMode) {
+        this._myriadMode = myriadMode;
     }
     /**
      * @param symbol The currency symbol to use.
      * @description This sets the symbol representing the currency, e.g. '$'. The string doesn't have to a single character.
      * You could also pass 'dollar'.
      */
-    public setCurrencySymbol(symbol : string) {
-        this.currencySymbol = symbol;
+    set currencySymbol(symbol : string) {
+        this._currencySymbol = symbol;
     }
     /**
      * @param symbol The symbol to display in front of positive numbers.
      * @description This sets the symbol to display in front of positive numbers. By default this is an empty string.
      */
-    public setPositiveSign(symbol : string) {
-        this.posSign = symbol;
+    set positiveSign(symbol : string) {
+        this._posSign = symbol;
     }
     /**
      * @param symbol The symbol to display in front of negative numbers.
      * @description This sets the symbol to display in front of negative numbers. By default this is '-'.
      */
-    public setNegativeSign(symbol : string) {
-        this.negSign = symbol;
+    set negativeSign(symbol : string) {
+        this._negSign = symbol;
     }
     /**
      * @param symbol The symbol to put between the integer part and the fractional number part.
      * @description This sets the symbol to put between the integer part and the fractional number part. Default is '.'.
      */
-    public setDecimalSeparator(symbol : string) {
-        this.decimalSeparator = symbol;
+    set decimalSeparator(symbol : string) {
+        this._decimalSeparator = symbol;
     }
     /**
      * @param size The amount of integer places to be grouped together.
      * @description Often larger numbers get grouped into smaller sections, like 1,000,000 instead of 1000000. This sets
      * the amount of characters that get grouped together. Default is 3.
      */
-    public setGroupSize(size : number) {
+    set groupSize(size : number) {
         if (!Number.isInteger(size) || size < 0)
             throw new Error('Size should be a positive integer.');
-        this.groupSize = size;
+        this._groupSize = size;
     }
     /**
      * @param symbol The character to group digits.
      * @description Often larger numbers get grouped into smaller sections, like 1,000,000 instead of 1000000. This sets
      * the the character used for that. Default is ','.
      */
-    public setGroupSeparator(symbol : string) {
-        this.groupSeparator = symbol;
+    set groupSeparator(symbol : string) {
+        this._groupSeparator = symbol;
     }
     /**
      * @param mode The way to display the sign
@@ -326,84 +332,88 @@ export class MoneyFormatter {
      * BETWEEN = Display the sign between the number and the symbol (depends on where the symbol is);
      * PARENTHESES = Ignore sign symbols and wrap negative amounts in parentheses;
      */
-    public setSignDisplayMode(mode : signDisplayMode) {
-        this.signDisplayMode = mode;
+    set signDisplayMode(mode : signDisplayMode) {
+        this._signDisplayMode = mode;
     }
 
     /**
      * @param symbol The symbol to display between the sign (pos/neg) and the number or currency symbol depending on display mode.
      * Default is an empty string.
      */
-    public setSignSeparator(symbol : string) : void {
-        this.signSeparator = symbol;
+    set signSeparator(symbol : string) {
+        this._signSeparator = symbol;
     }
 
-    public setOpeningParenthesis(symbol : string) {
-        this.openingParenthesis = symbol;
+    set openingParenthesis(symbol : string) {
+        this._openingParenthesis = symbol;
     }
 
-    public setClosingParenthesis(symbol : string) {
-        this.closingParenthesis = symbol;
+    set closingParenthesis(symbol : string) {
+        this._closingParenthesis = symbol;
     }
 
-    public getCurrencySymbol() : string {
-        return this.currencySymbol;
+    get currencySymbol() : string {
+        return this._currencySymbol;
     }
 
-    public getSymbolPosition() : symbolPosition {
-        return this.symbolPosition;
+    get symbolPosition() : symbolPosition {
+        return this._symbolPosition;
     }
 
-    public getSymbolSeparator() : string {
-        return this.symbolSeparator;
+    get symbolSeparator() : string {
+        return this._symbolSeparator;
     }
 
-    public getPosSign() : string {
-        return this.posSign;
+    get posSign() : string {
+        return this._posSign;
     }
 
-    public getNegSign() : string {
-        return this.negSign;
+    get negSign() : string {
+        return this._negSign;
     }
 
-    public getDigitCharacters() : string[] {
-        return this.digitCharacters.slice(0);
+    get digitCharacters() : string[] {
+        return this._digitCharacters.slice(0);
     }
 
-    public getMyriadMode() : myriadMode {
-        return this.myriadMode;
+    get myriadMode() : myriadMode {
+        return this._myriadMode;
     }
 
-    public getMyriadCharacters() : string[] {
-        return this.myriadCharacters.slice(0);
+    get myriadCharacters() : string[] {
+        return this._myriadCharacters.slice(0);
     }
 
-    public getDecimalSeparator() : string {
-        return this.decimalSeparator;
+    get decimalSeparator() : string {
+        return this._decimalSeparator;
     }
 
-    public getGroupSeparator() : string {
-        return this.groupSeparator;
+    get groupSeparator() : string {
+        return this._groupSeparator;
     }
 
-    public getGroupSize() : number {
-        return this.groupSize;
+    get groupSize() : number {
+        return this._groupSize;
     }
 
-    public getSignDisplayMode() : signDisplayMode {
-        return this.signDisplayMode;
+    get signDisplayMode() : signDisplayMode {
+        return this._signDisplayMode;
     }
 
-    public getSignSeparator() : string {
-        return this.signSeparator;
+    get signSeparator() : string {
+        return this._signSeparator;
     }
 
-    public getOpeningParenthesis() : string {
-        return this.openingParenthesis;
+    get openingParenthesis() : string {
+        return this._openingParenthesis;
     }
 
-    public getClosingParenthesis() : string {
-        return this.closingParenthesis;
+    get closingParenthesis() : string {
+        return this._closingParenthesis;
     }
 
+    // TODO
+    get currencyName() : string {
+        return this._currencyName;
+    }
 }

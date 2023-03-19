@@ -14,60 +14,58 @@ export class FormatterFactory {
         let formatter : MoneyFormatter = new MoneyFormatter();
         switch (presetToUse) {
             case preset.JPY_PURE:
-                formatter.setMyriadMode(myriadMode.JAPANESE);
-                formatter.setDigitCharacters(['〇','一','二','三','四','五','六','七','八','九']);
-                formatter.setMyriadCharacters(['十','百','千','万','億','兆','京','垓','𥝱','穣','溝','澗','正','載',]);
-                formatter.setSymbolPosition(symbolPosition.BACK);
-                formatter.setSymbolSeparator('');
-                formatter.setCurrencySymbol('円');
-                formatter.setNegativeSign('－');
-                formatter.setPositiveSign('');
-                formatter.setDecimalSeparator('．');
-                formatter.setGroupSeparator('');
-                formatter.setGroupSize(0);
+                formatter.myriadMode = myriadMode.JAPANESE;
+                formatter.digitCharacters = ['〇','一','二','三','四','五','六','七','八','九'];
+                formatter.myriadCharacters = ['十','百','千','万','億','兆','京','垓','𥝱','穣','溝','澗','正','載',];
+                formatter.symbolPosition = symbolPosition.BACK;
+                formatter.symbolSeparator = '';
+                formatter.currencySymbol = '円';
+                formatter.negativeSign = '－';
+                formatter.positiveSign = '';
+                formatter.decimalSeparator = '．';
+                formatter.groupSeparator = '';
+                formatter.groupSize = 0;
                 break;
             case preset.JPY_MIXED:
-                formatter.setMyriadMode(myriadMode.JAPANESE);
-                formatter.setDigitCharacters(['０','１','２','３','４','５','６','７','８','９']);
-                formatter.setMyriadCharacters(['十','百','千','万','億','兆','京','垓','𥝱','穣','溝','澗','正','載',]);
-                formatter.setSymbolPosition(symbolPosition.BACK);
-                formatter.setSymbolSeparator('');
-                formatter.setCurrencySymbol('円');
-                formatter.setNegativeSign('－');
-                formatter.setPositiveSign('');
-                formatter.setDecimalSeparator('．');
-                formatter.setGroupSeparator('');
-                formatter.setGroupSize(0);
+                formatter.myriadMode = myriadMode.JAPANESE;
+                formatter.digitCharacters = ['０','１','２','３','４','５','６','７','８','９'];
+                formatter.myriadCharacters = ['十','百','千','万','億','兆','京','垓','𥝱','穣','溝','澗','正','載',];
+                formatter.symbolPosition = symbolPosition.BACK;
+                formatter.symbolSeparator = '';
+                formatter.currencySymbol = '円';
+                formatter.negativeSign = '－';
+                formatter.positiveSign = '';
+                formatter.decimalSeparator = '．';
+                formatter.groupSeparator = '';
+                formatter.groupSize = 0;
                 break;
             case preset.EN_US:
-                formatter.setDigitCharacters(['0','1','2','3','4','5','6','7','8','9']);
-                formatter.setSymbolPosition(symbolPosition.FRONT);
-                formatter.setSymbolSeparator('');
-                formatter.setCurrencySymbol('$');
-                formatter.setNegativeSign('-');
-                formatter.setPositiveSign('');
-                formatter.setDecimalSeparator('.');
-                formatter.setGroupSeparator(',');
-                formatter.setGroupSize(3);
-                formatter.setSignDisplayMode(signDisplayMode.PARENTHESES);
-                formatter.setOpeningParenthesis('(');
-                formatter.setClosingParenthesis(')');
+                formatter.digitCharacters = ['0','1','2','3','4','5','6','7','8','9'];
+                formatter.symbolPosition = symbolPosition.FRONT;
+                formatter.symbolSeparator = '';
+                formatter.currencySymbol = '$';
+                formatter.negativeSign = '-';
+                formatter.positiveSign = '';
+                formatter.decimalSeparator = '.';
+                formatter.groupSeparator = ',';
+                formatter.groupSize = 3;
+                formatter.signDisplayMode = signDisplayMode.PARENTHESES;
+                formatter.openingParenthesis = '(';
+                formatter.closingParenthesis = ')';
                 break;
             case preset.EUR:
-                formatter.setDigitCharacters(['0','1','2','3','4','5','6','7','8','9']);
-                formatter.setSymbolPosition(symbolPosition.BACK);
-                formatter.setSymbolSeparator(' ');
-                formatter.setCurrencySymbol('€');
-                formatter.setNegativeSign('-');
-                formatter.setPositiveSign('');
-                formatter.setDecimalSeparator(',');
-                formatter.setGroupSeparator('.');
-                formatter.setGroupSize(3);
-                formatter.setSignDisplayMode(signDisplayMode.BEFORE);
-                formatter.setSignSeparator('');
-                break;
-            case preset.JPY_INTL:
-
+                formatter.digitCharacters = ['0','1','2','3','4','5','6','7','8','9'];
+                formatter.symbolPosition = symbolPosition.BACK;
+                formatter.symbolSeparator = ' ';
+                formatter.currencySymbol = '€';
+                formatter.negativeSign = '-';
+                formatter.positiveSign = '';
+                formatter.decimalSeparator = ',';
+                formatter.groupSeparator = '.';
+                formatter.groupSize = 3;
+                formatter.signDisplayMode = signDisplayMode.BEFORE;
+                formatter.openingParenthesis = '(';
+                formatter.closingParenthesis = ')';
                 break;
 
             // TEMPLATE CONTAINING ALL SETTERS
