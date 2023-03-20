@@ -2,6 +2,7 @@ import {Money} from "../src/money";
 import {MoneyCalculator} from "../src/money_calculator";
 
 describe('Money Calculator class', () => {
+    // TODO: TEST SUBTRACT ON CONST
     describe('The add method', () => {
         let money1 = new Money('10.25');
         let money2 = new Money('399.99');

@@ -1,4 +1,5 @@
 import {Money} from "../src/money";
+import {displayOrder} from "../src/money_formatter";
 
 
 describe('Money class', () => {
