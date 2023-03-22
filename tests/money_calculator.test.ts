@@ -2,7 +2,6 @@ import {Money} from "../src/money";
 import {MoneyCalculator} from "../src/money_calculator";
 
 describe('Money Calculator class', () => {
-    // TODO: TEST SUBTRACT ON CONST
     describe('The add method', () => {
         let money1 = new Money('10.25');
         let money2 = new Money('399.99');
@@ -43,6 +42,12 @@ describe('Money Calculator class', () => {
             money2.value = '-12.125';
             MoneyCalculator.add(money1, money2);
             expect(money1.value).toBe('-124.250');
+        });
+        it('should add two const money values', () => {
+            const constMoney1 = new Money('1.00');
+            const constMoney2 = new Money('1.00');
+            MoneyCalculator.add(constMoney1, constMoney2);
+            expect(constMoney1.value).toBe('2.00');
         });
         it('should add a positive and a negative number', () => {
             money1.value = '-0.125';
@@ -303,6 +308,12 @@ describe('Money Calculator class', () => {
             money2.value = '0.01';
             MoneyCalculator.subtract(money1, money2);
             expect(money1.value).toBe('0.99');
+        });
+        it('should subtract two const money values', () => {
+            const constMoney1 = new Money('1.00');
+            const constMoney2 = new Money('1.00');
+            MoneyCalculator.subtract(constMoney1, constMoney2);
+            expect(constMoney1.value).toBe('0.00');
         });
     });
 });

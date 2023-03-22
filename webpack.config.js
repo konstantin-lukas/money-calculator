@@ -14,7 +14,7 @@ const varConfig = {
         rules: [
             {
                 test: /\.ts$/,
-                exclude: /node_modules/,
+                exclude: [path.resolve(__dirname, 'tests')],
                 use: 'ts-loader',
                 include: [path.resolve(__dirname, 'src')]
             }
@@ -49,7 +49,7 @@ const umdConfig = {
         rules: [
             {
                 test: /\.ts$/,
-                exclude: /node_modules/,
+                exclude: [path.resolve(__dirname, 'tests')],
                 use: 'ts-loader',
                 include: [path.resolve(__dirname, 'src')]
             }
@@ -83,7 +83,7 @@ const cjsConfig = {
         rules: [
             {
                 test: /\.ts$/,
-                exclude: /node_modules/,
+                exclude: [path.resolve(__dirname, 'tests')],
                 use: 'ts-loader',
                 include: [path.resolve(__dirname, 'src')]
             }

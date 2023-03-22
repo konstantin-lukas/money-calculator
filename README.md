@@ -1,6 +1,5 @@
 # money-calculator
-This is a library for doing artihmetic on currencies in a safe way.
-Also has formatting capabilites. WIP. Wait until first release before using.
+This is a library for formatting currencies designed for frontend applications. Also has arithmetic capabilities. Arithmetic implementation is slow and not designed for large-scale backend applications.
 
 
 ## Notes On Development Routine
