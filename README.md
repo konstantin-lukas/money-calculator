@@ -2,7 +2,7 @@
 This is a library for formatting currencies designed for frontend applications. Also has arithmetic capabilities. Arithmetic implementation is slow and not designed for large-scale backend applications.
 
 
-## Notes On Development Routine
+## Notes On Developing New Versions
 First you need to clone the repo and install the dev-dependencies by running:
 ```bash
 npm install
