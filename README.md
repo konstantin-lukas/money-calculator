@@ -1,6 +1,10 @@
 # Moneydew
 This is a library for formatting currencies designed for frontend applications. Also has arithmetic capabilities. Arithmetic implementation is slow and not designed for large-scale backend applications.
-
+To install it just run
+```bash
+npm install moneydew
+```
+or download the latest release as a zip file.
 
 ## Notes On Developing New Versions
 First you need to clone the repo and install the dev-dependencies by running:
@@ -50,6 +54,11 @@ This is mostly intended for use in Node applications. Simply import the respecti
 import myLibrary from "/path/to/library/moneydew.commonjs.cjs";
 ```
 Then you can use the library under the name `myLibrary` or whatever you choose to name it.
+If you installed the package with npm, you can also just use
+```JavaScript
+const myLibrary = require('moneydew');
+```
+as the commonjs file is the default entry point.
 
 ### UMD
 This is among other uses intended for importing with es6. To use the import feature
