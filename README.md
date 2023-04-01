@@ -1,4 +1,4 @@
-# money-calculator
+# Moneydew
 This is a library for formatting currencies designed for frontend applications. Also has arithmetic capabilities. Arithmetic implementation is slow and not designed for large-scale backend applications.
 
 
@@ -39,15 +39,15 @@ and a vanilla version using a global variable.
 This is the most bare-bones way of using this library. Simply import library in your
 HTML file before using it like so:
 ```HTML
-<script src="/path/to/library/money_calculator.js"></script>
+<script src="/path/to/library/moneydew.js"></script>
 <script src="fileUsingLibrary.js"></script>
 ```
-The library will then be available under the global variable `MoneyCalculator`.
+The library will then be available under the global variable `moneydew`.
 
 ### CommonJS
 This is mostly intended for use in Node applications. Simply import the respective file:
 ```JavaScript
-import myLibrary from "/path/to/library/money_calculator.commonjs.cjs";
+import myLibrary from "/path/to/library/moneydew.commonjs.cjs";
 ```
 Then you can use the library under the name `myLibrary` or whatever you choose to name it.
 
@@ -59,6 +59,6 @@ in a browser, make sure to make your script using the library a module:
 ```
 Then inside `myFile.js` you can import the library like this:
 ```JavaScript
-import "../dist/money_calculator.umd.js";
+import "../dist/moneydew.umd.js";
 ```
 Then you can just use the library functions directly.

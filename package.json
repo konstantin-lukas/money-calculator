@@ -24,7 +24,9 @@
     "test-money": "jest money.test.ts --coverage  --collectCoverageFrom=src/money.ts",
     "test-money-calculator": "jest money_calculator.test.ts --coverage  --collectCoverageFrom=src/money_calculator.ts",
     "test-money-formatter": "jest money_formatter.test.ts --coverage  --collectCoverageFrom=src/money_formatter.ts",
-    "generate-documentation": "typedoc"
+    "generate-documentation": "typedoc",
+    "serve-integration": "http-server",
+    "run-integration-cjs": "node integration.js"
   },
   "repository": {
     "type": "git",
@@ -40,6 +42,7 @@
   "homepage": "https://github.com/konstantin-lukas/moneydew#readme",
   "devDependencies": {
     "@types/jest": "^29.4.0",
+    "http-server": "^14.1.1",
     "jest": "^29.4.3",
     "ts-jest": "^29.0.5",
     "ts-loader": "^9.4.2",
