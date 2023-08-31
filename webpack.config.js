@@ -4,7 +4,7 @@ const varConfig = {
     entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'moneydew.js',
+        filename: 'moneydew.esm.js',
         library: {
             type: 'var',
             name: 'moneydew'
@@ -74,7 +74,7 @@ const cjsConfig = {
     entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'moneydew.commonjs.cjs',
+        filename: 'moneydew.cjs',
         library: {
             type: 'commonjs'
         }

@@ -35,39 +35,3 @@ Tests are written for jest inside the tests folder. Again, if you've installed t
 dev-dependencies you should have everything set up. Jest is using ts-jest to compile
 the typescript files on the run, so you don't have to compile the files with webpack
 first and can test files individually. Just write your tests and run the test npm script.
-
-## How to Use
-This library is currently released in 3 versions: a umd version, a commonjs version,
-and a vanilla version using a global variable.
-### Regular JavaScript
-This is the most bare-bones way of using this library. Simply import library in your
-HTML file before using it like so:
-```HTML
-<script src="/path/to/library/moneydew.js"></script>
-<script src="fileUsingLibrary.js"></script>
-```
-The library will then be available under the global variable `moneydew`.
-
-### CommonJS
-This is mostly intended for use in Node applications. Simply import the respective file:
-```JavaScript
-import myLibrary from "/path/to/library/moneydew.commonjs.cjs";
-```
-Then you can use the library under the name `myLibrary` or whatever you choose to name it.
-If you installed the package with npm, you can also just use
-```JavaScript
-const myLibrary = require('moneydew');
-```
-as the commonjs file is the default entry point.
-
-### UMD
-This is among other uses intended for importing with es6. To use the import feature
-in a browser, make sure to make your script using the library a module:
-```HTML
-<script src="myFile.js" type="module"></script>
-```
-Then inside `myFile.js` you can import the library like this:
-```JavaScript
-import "../dist/moneydew.umd.js";
-```
-Then you can just use the library functions directly.

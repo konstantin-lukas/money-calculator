@@ -2,7 +2,10 @@
   "name": "moneydew",
   "version": "0.0.1",
   "description": "This is a library for formatting currencies designed for frontend applications. Also has arithmetic capabilities. Arithmetic implementation is slow and not designed for large-scale backend applications.",
-  "main": "./dist/moneydew.commonjs.cjs",
+  "main": "dist/moneydew.cjs",
+  "module": "dist/moneydew.esm.js",
+  "browser": "dist/moneydew.umd.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build-all-production": "npm run build-cjs-production && npm run build-umd-production && npm run build-var-production",
     "build-cjs-development": "webpack --env configType=cjs production=false",
@@ -40,13 +43,9 @@
     "url": "https://github.com/konstantin-lukas/moneydew/issues"
   },
   "files": [
-    "./dist/moneydew.js",
-    "./dist/moneydew.commonjs.cjs",
-    "./dist/moneydew.umd.js",
-    "docs",
+    "./dist",
     "LICENSE",
     "package.json",
-    "package-lock.json",
     "README.md"
   ],
   "homepage": "https://github.com/konstantin-lukas/moneydew#readme",
