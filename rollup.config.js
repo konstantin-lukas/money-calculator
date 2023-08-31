@@ -13,7 +13,7 @@ export default [
       }),
       typescript({
         declaration: true,
-        declarationDir: 'dist/types', // Adjust this to your preferred .d.ts output directory
+        declarationDir: './', // Adjust this to your preferred .d.ts output directory
       }),
     ],
     output: [
