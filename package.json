@@ -26,7 +26,10 @@
     "url": "https://github.com/konstantin-lukas/moneydew/issues"
   },
   "files": [
-    "./dist",
+    "index.js",
+    "index.mjs",
+    "*d.ts",
+    "*.map",
     "LICENSE",
     "package.json",
     "README.md"
