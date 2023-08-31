@@ -1,6 +1,6 @@
 {
   "name": "moneydew",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "This is a library for formatting currencies designed for frontend applications. Also has arithmetic capabilities. Arithmetic implementation is slow and not designed for large-scale backend applications.",
   "main": "dist/moneydew.js",
   "module": "dist/moneydew.mjs",
