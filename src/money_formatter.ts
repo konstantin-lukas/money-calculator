@@ -210,7 +210,7 @@ export class MoneyFormatter {
      * @private
      * @returns String to display before number.
      */
-    private prefix(isNegative : boolean) : string {
+    public prefix(isNegative : boolean) : string {
         let result : string = '';
         const sign : string = isNegative ? this._negativeSign : this._positiveSign;
 
@@ -292,7 +292,7 @@ export class MoneyFormatter {
      * @private
      * @returns String to display before number.
      */
-    private suffix(isNegative : boolean) : string {
+    suffix(isNegative : boolean) : string {
         let result : string = '';
         const sign : string = isNegative ? this._negativeSign : this._positiveSign;
         switch (this._displayOrder) {
