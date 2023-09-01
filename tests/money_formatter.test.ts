@@ -1,5 +1,5 @@
 import {Money} from "../src/money";
-import {displayOrder, MoneyFormatter, myriadMode} from "../src/money_formatter";
+import {DisplayOrder, MoneyFormatter, MyriadMode} from "../src/money_formatter";
 
 describe('Money Formatter class', () => {
     describe('The private addDigits method', () => {
@@ -52,7 +52,7 @@ describe('Money Formatter class', () => {
             expect(() => formatter.formatMyriad(moneyInvalid)).toThrowError();
         });
         let money : Money = new Money('1500');
-        formatter.displayOrder = displayOrder.SIGN_NUMBER_SYMBOL_NAME;
+        formatter.displayOrder = DisplayOrder.SIGN_NUMBER_SYMBOL_NAME;
         formatter.symbolSeparator = '';
         it('should return the currency in a myriad format like in many east asian languages', () => {
             expect(formatter.formatMyriad(money)).toBe('千5百$');
@@ -98,7 +98,7 @@ describe('Money Formatter class', () => {
             expect(() => formatter.formatMyriad(money)).toThrowError();
             money.value = '0';
             expect(formatter.formatMyriad(money)).toBe('0$');
-            formatter.displayOrder = displayOrder.SIGN_SYMBOL_NUMBER_NAME;
+            formatter.displayOrder = DisplayOrder.SIGN_SYMBOL_NUMBER_NAME;
             expect(formatter.formatMyriad(money)).toBe('$0');
             money.value = '10';
             expect(formatter.formatMyriad(money)).toBe('$十');
@@ -118,7 +118,7 @@ describe('Money Formatter class', () => {
             expect(formatter.formatMyriad(money)).toBe('$2YIKES5OOF4');
             money.value = '-254';
             expect(formatter.formatMyriad(money)).toBe('-$2YIKES5OOF4');
-            formatter.myriadMode = myriadMode.CHINESE;
+            formatter.myriadMode = MyriadMode.CHINESE;
             expect(() => formatter.formatMyriad(money)).toThrowError();
         });
     });
@@ -142,7 +142,7 @@ describe('Money Formatter class', () => {
             formatter.signSeparator = '';
             money.isNegative = false;
             expect(formatter.format(money)).toBe('+$9.9.9.9,99');
-            formatter.displayOrder = displayOrder.NUMBER_NAME_SIGN_SYMBOL;
+            formatter.displayOrder = DisplayOrder.NUMBER_NAME_SIGN_SYMBOL;
             formatter.currencyName = 'USD';
             formatter.nameSeparator = ' ';
             expect(formatter.format(money)).toBe('9.9.9.9,99 USD+$');
@@ -175,8 +175,8 @@ describe('Money Formatter class', () => {
             expect(formatter.positiveSign).toBe('+');
             expect(formatter.signSeparator).toBe('');
             expect(formatter.symbolSeparator).toBe('');
-            expect(formatter.myriadMode).toBe(myriadMode.JAPANESE);
-            expect(formatter.displayOrder).toBe(displayOrder.NUMBER_NAME_SIGN_SYMBOL);
+            expect(formatter.myriadMode).toBe(MyriadMode.JAPANESE);
+            expect(formatter.displayOrder).toBe(DisplayOrder.NUMBER_NAME_SIGN_SYMBOL);
             expect(formatter.currencyName).toBe('USD');
             expect(formatter.nameSeparator).toBe(' ');
         });
@@ -185,7 +185,7 @@ describe('Money Formatter class', () => {
         let formatter : MoneyFormatter = new MoneyFormatter({});
         let money : Money = new Money('1.00');
         it('should change the way the name of the currency is displayed', () => {
-            formatter.displayOrder = displayOrder.SIGN_SYMBOL_NUMBER_NAME;
+            formatter.displayOrder = DisplayOrder.SIGN_SYMBOL_NUMBER_NAME;
             expect(formatter.format(money)).toBe('$1.00');
             formatter.nameSeparator = ' ';
             formatter.currencyName = 'USD';
@@ -203,53 +203,53 @@ describe('Money Formatter class', () => {
         formatter.currencySymbol = '$';
         formatter.negativeSign = '-';
         it('should change the order of the format function', () => {
-            formatter.displayOrder = displayOrder.SIGN_SYMBOL_NAME_NUMBER;
+            formatter.displayOrder = DisplayOrder.SIGN_SYMBOL_NAME_NUMBER;
             expect(formatter.format(money)).toBe('- $ USD 199.99');
-            formatter.displayOrder = displayOrder.SIGN_NAME_SYMBOL_NUMBER;
+            formatter.displayOrder = DisplayOrder.SIGN_NAME_SYMBOL_NUMBER;
             expect(formatter.format(money)).toBe('- USD $ 199.99');
-            formatter.displayOrder = displayOrder.SIGN_SYMBOL_NUMBER_NAME;
+            formatter.displayOrder = DisplayOrder.SIGN_SYMBOL_NUMBER_NAME;
             expect(formatter.format(money)).toBe('- $ 199.99 USD');
-            formatter.displayOrder = displayOrder.SIGN_NAME_NUMBER_SYMBOL;
+            formatter.displayOrder = DisplayOrder.SIGN_NAME_NUMBER_SYMBOL;
             expect(formatter.format(money)).toBe('- USD 199.99 $');
-            formatter.displayOrder = displayOrder.SIGN_NUMBER_SYMBOL_NAME;
+            formatter.displayOrder = DisplayOrder.SIGN_NUMBER_SYMBOL_NAME;
             expect(formatter.format(money)).toBe('- 199.99 $ USD');
-            formatter.displayOrder = displayOrder.SIGN_NUMBER_NAME_SYMBOL;
+            formatter.displayOrder = DisplayOrder.SIGN_NUMBER_NAME_SYMBOL;
             expect(formatter.format(money)).toBe('- 199.99 USD $');
-            formatter.displayOrder = displayOrder.SYMBOL_SIGN_NAME_NUMBER;
+            formatter.displayOrder = DisplayOrder.SYMBOL_SIGN_NAME_NUMBER;
             expect(formatter.format(money)).toBe('$ - USD 199.99');
-            formatter.displayOrder = displayOrder.SYMBOL_NAME_SIGN_NUMBER;
+            formatter.displayOrder = DisplayOrder.SYMBOL_NAME_SIGN_NUMBER;
             expect(formatter.format(money)).toBe('$ USD - 199.99');
-            formatter.displayOrder = displayOrder.SYMBOL_SIGN_NUMBER_NAME;
+            formatter.displayOrder = DisplayOrder.SYMBOL_SIGN_NUMBER_NAME;
             expect(formatter.format(money)).toBe('$ - 199.99 USD');
-            formatter.displayOrder = displayOrder.SYMBOL_NAME_NUMBER_SIGN;
+            formatter.displayOrder = DisplayOrder.SYMBOL_NAME_NUMBER_SIGN;
             expect(formatter.format(money)).toBe('$ USD 199.99 -');
-            formatter.displayOrder = displayOrder.SYMBOL_NUMBER_SIGN_NAME;
+            formatter.displayOrder = DisplayOrder.SYMBOL_NUMBER_SIGN_NAME;
             expect(formatter.format(money)).toBe('$ 199.99 - USD');
-            formatter.displayOrder = displayOrder.SYMBOL_NUMBER_NAME_SIGN;
+            formatter.displayOrder = DisplayOrder.SYMBOL_NUMBER_NAME_SIGN;
             expect(formatter.format(money)).toBe('$ 199.99 USD -');
-            formatter.displayOrder = displayOrder.NAME_SIGN_SYMBOL_NUMBER;
+            formatter.displayOrder = DisplayOrder.NAME_SIGN_SYMBOL_NUMBER;
             expect(formatter.format(money)).toBe('USD - $ 199.99');
-            formatter.displayOrder = displayOrder.NAME_SYMBOL_SIGN_NUMBER;
+            formatter.displayOrder = DisplayOrder.NAME_SYMBOL_SIGN_NUMBER;
             expect(formatter.format(money)).toBe('USD $ - 199.99');
-            formatter.displayOrder = displayOrder.NAME_SIGN_NUMBER_SYMBOL;
+            formatter.displayOrder = DisplayOrder.NAME_SIGN_NUMBER_SYMBOL;
             expect(formatter.format(money)).toBe('USD - 199.99 $');
-            formatter.displayOrder = displayOrder.NAME_SYMBOL_NUMBER_SIGN;
+            formatter.displayOrder = DisplayOrder.NAME_SYMBOL_NUMBER_SIGN;
             expect(formatter.format(money)).toBe('USD $ 199.99 -');
-            formatter.displayOrder = displayOrder.NAME_NUMBER_SIGN_SYMBOL;
+            formatter.displayOrder = DisplayOrder.NAME_NUMBER_SIGN_SYMBOL;
             expect(formatter.format(money)).toBe('USD 199.99 - $');
-            formatter.displayOrder = displayOrder.NAME_NUMBER_SYMBOL_SIGN;
+            formatter.displayOrder = DisplayOrder.NAME_NUMBER_SYMBOL_SIGN;
             expect(formatter.format(money)).toBe('USD 199.99 $ -');
-            formatter.displayOrder = displayOrder.NUMBER_NAME_SYMBOL_SIGN;
+            formatter.displayOrder = DisplayOrder.NUMBER_NAME_SYMBOL_SIGN;
             expect(formatter.format(money)).toBe('199.99 USD $ -');
-            formatter.displayOrder = displayOrder.NUMBER_NAME_SIGN_SYMBOL;
+            formatter.displayOrder = DisplayOrder.NUMBER_NAME_SIGN_SYMBOL;
             expect(formatter.format(money)).toBe('199.99 USD - $');
-            formatter.displayOrder = displayOrder.NUMBER_SIGN_NAME_SYMBOL;
+            formatter.displayOrder = DisplayOrder.NUMBER_SIGN_NAME_SYMBOL;
             expect(formatter.format(money)).toBe('199.99 - USD $');
-            formatter.displayOrder = displayOrder.NUMBER_SIGN_SYMBOL_NAME;
+            formatter.displayOrder = DisplayOrder.NUMBER_SIGN_SYMBOL_NAME;
             expect(formatter.format(money)).toBe('199.99 - $ USD');
-            formatter.displayOrder = displayOrder.NUMBER_SYMBOL_NAME_SIGN;
+            formatter.displayOrder = DisplayOrder.NUMBER_SYMBOL_NAME_SIGN;
             expect(formatter.format(money)).toBe('199.99 $ USD -');
-            formatter.displayOrder = displayOrder.NUMBER_SYMBOL_SIGN_NAME;
+            formatter.displayOrder = DisplayOrder.NUMBER_SYMBOL_SIGN_NAME;
             expect(formatter.format(money)).toBe('199.99 $ - USD');
 
         });
@@ -266,9 +266,9 @@ describe('Money Formatter class', () => {
                 positiveSign : 'P',
                 negativeSign : 'M',
                 signSeparator : '|',
-                displayOrder : displayOrder.SIGN_SYMBOL_NUMBER_NAME,
+                displayOrder : DisplayOrder.SIGN_SYMBOL_NUMBER_NAME,
                 digitCharacters : ['A','B','C','D','E','F','G','H','I','J'],
-                myriadMode : myriadMode.JAPANESE,
+                myriadMode : MyriadMode.JAPANESE,
                 myriadCharacters : ['ß','?',';'],
                 decimalSeparator : ':',
                 groupSeparator : ' ',

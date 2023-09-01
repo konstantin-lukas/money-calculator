@@ -1,6 +1,6 @@
 import {Money} from "./money";
 
-export enum displayOrder {
+export enum DisplayOrder {
     SIGN_SYMBOL_NAME_NUMBER,
     SIGN_NAME_SYMBOL_NUMBER,
     SIGN_SYMBOL_NUMBER_NAME,
@@ -28,9 +28,26 @@ export enum displayOrder {
 }
 
 
-export enum myriadMode {
+export enum MyriadMode {
     JAPANESE,
     CHINESE
+}
+
+export type FormatterInitializer = {
+    currencySymbol? : string,
+    symbolSeparator? : string,
+    currencyName? : string,
+    nameSeparator? : string,
+    positiveSign? : string,
+    negativeSign? : string,
+    signSeparator? : string
+    displayOrder? : DisplayOrder,
+    digitCharacters? : string[],
+    myriadMode? : MyriadMode,
+    myriadCharacters? : string[],
+    decimalSeparator? : string,
+    groupSeparator? : string,
+    groupSize? : number,
 }
 
 export class MoneyFormatter {
@@ -44,10 +61,10 @@ export class MoneyFormatter {
     private _negativeSign : string = '-';
     private _signSeparator : string = '';
 
-    private _displayOrder : displayOrder = displayOrder.SIGN_SYMBOL_NUMBER_NAME;
+    private _displayOrder : DisplayOrder = DisplayOrder.SIGN_SYMBOL_NUMBER_NAME;
 
     private _digitCharacters : string[] = ['0','1','2','3','4','5','6','7','8','9'];
-    private _myriadMode : myriadMode = myriadMode.JAPANESE;
+    private _myriadMode : MyriadMode = MyriadMode.JAPANESE;
     private _myriadCharacters : string[] = [
         '十', // 10
         '百', // 100
@@ -68,26 +85,7 @@ export class MoneyFormatter {
     private _groupSeparator : string = ',';
     private _groupSize : number = 3;
 
-    public constructor(initializer : {
-        currencySymbol? : string,
-        symbolSeparator? : string,
-
-        currencyName? : string,
-        nameSeparator? : string,
-
-        positiveSign? : string,
-        negativeSign? : string,
-        signSeparator? : string
-
-        displayOrder? : displayOrder,
-
-        digitCharacters? : string[],
-        myriadMode? : myriadMode,
-        myriadCharacters? : string[],
-        decimalSeparator? : string,
-        groupSeparator? : string,
-        groupSize? : number,
-    }) {
+    public constructor(initializer : FormatterInitializer) {
 
         if (typeof initializer.currencySymbol === 'string')
             this.currencySymbol = initializer.currencySymbol;
@@ -103,9 +101,9 @@ export class MoneyFormatter {
             this.negativeSign = initializer.negativeSign;
         if (typeof initializer.signSeparator === 'string')
             this.signSeparator = initializer.signSeparator;
-        if (typeof initializer.displayOrder !== 'undefined' && typeof initializer.displayOrder === typeof displayOrder.SIGN_NUMBER_SYMBOL_NAME)
+        if (typeof initializer.displayOrder !== 'undefined' && typeof initializer.displayOrder === typeof DisplayOrder.SIGN_NUMBER_SYMBOL_NAME)
             this.displayOrder = initializer.displayOrder;
-        if (typeof initializer.myriadMode !== 'undefined' && typeof initializer.myriadMode === typeof myriadMode.JAPANESE)
+        if (typeof initializer.myriadMode !== 'undefined' && typeof initializer.myriadMode === typeof MyriadMode.JAPANESE)
             this.myriadMode = initializer.myriadMode;
         if (typeof initializer.digitCharacters === 'object')
             this.digitCharacters = initializer.digitCharacters;
@@ -215,69 +213,69 @@ export class MoneyFormatter {
         const sign : string = isNegative ? this._negativeSign : this._positiveSign;
 
         switch (this._displayOrder) {
-            case displayOrder.NAME_NUMBER_SIGN_SYMBOL:
-            case displayOrder.NAME_NUMBER_SYMBOL_SIGN:
+            case DisplayOrder.NAME_NUMBER_SIGN_SYMBOL:
+            case DisplayOrder.NAME_NUMBER_SYMBOL_SIGN:
                 if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
                 break;
-            case displayOrder.NAME_SIGN_NUMBER_SYMBOL:
-                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
-                if (sign !== '') result += sign + this._signSeparator;
-                break;
-            case displayOrder.NAME_SIGN_SYMBOL_NUMBER:
-                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
-                if (sign !== '') result += sign + this._signSeparator;
-                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
-                break;
-            case displayOrder.NAME_SYMBOL_NUMBER_SIGN:
-                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
-                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
-                break;
-            case displayOrder.NAME_SYMBOL_SIGN_NUMBER:
-                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
-                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
-                if (sign !== '') result += sign + this._signSeparator;
-                break;
-            case displayOrder.SIGN_NAME_NUMBER_SYMBOL:
-                if (sign !== '') result += sign + this._signSeparator;
-                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
-                break;
-            case displayOrder.SIGN_NAME_SYMBOL_NUMBER:
-                if (sign !== '') result += sign + this._signSeparator;
-                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
-                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
-                break;
-            case displayOrder.SIGN_NUMBER_NAME_SYMBOL:
-            case displayOrder.SIGN_NUMBER_SYMBOL_NAME:
-                if (sign !== '') result += sign + this._signSeparator;
-                break;
-            case displayOrder.SIGN_SYMBOL_NAME_NUMBER:
-                if (sign !== '') result += sign + this._signSeparator;
-                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
-                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
-                break;
-            case displayOrder.SIGN_SYMBOL_NUMBER_NAME:
-                if (sign !== '') result += sign + this._signSeparator;
-                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
-                break;
-            case displayOrder.SYMBOL_NAME_NUMBER_SIGN:
-                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
-                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
-                break;
-            case displayOrder.SYMBOL_NAME_SIGN_NUMBER:
-                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
+            case DisplayOrder.NAME_SIGN_NUMBER_SYMBOL:
                 if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
                 if (sign !== '') result += sign + this._signSeparator;
                 break;
-            case displayOrder.SYMBOL_NUMBER_NAME_SIGN:
-            case displayOrder.SYMBOL_NUMBER_SIGN_NAME:
+            case DisplayOrder.NAME_SIGN_SYMBOL_NUMBER:
+                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
+                if (sign !== '') result += sign + this._signSeparator;
                 if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
                 break;
-            case displayOrder.SYMBOL_SIGN_NAME_NUMBER:
+            case DisplayOrder.NAME_SYMBOL_NUMBER_SIGN:
+                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
+                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
+                break;
+            case DisplayOrder.NAME_SYMBOL_SIGN_NUMBER:
+                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
+                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
+                if (sign !== '') result += sign + this._signSeparator;
+                break;
+            case DisplayOrder.SIGN_NAME_NUMBER_SYMBOL:
+                if (sign !== '') result += sign + this._signSeparator;
+                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
+                break;
+            case DisplayOrder.SIGN_NAME_SYMBOL_NUMBER:
+                if (sign !== '') result += sign + this._signSeparator;
+                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
+                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
+                break;
+            case DisplayOrder.SIGN_NUMBER_NAME_SYMBOL:
+            case DisplayOrder.SIGN_NUMBER_SYMBOL_NAME:
+                if (sign !== '') result += sign + this._signSeparator;
+                break;
+            case DisplayOrder.SIGN_SYMBOL_NAME_NUMBER:
+                if (sign !== '') result += sign + this._signSeparator;
+                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
+                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
+                break;
+            case DisplayOrder.SIGN_SYMBOL_NUMBER_NAME:
+                if (sign !== '') result += sign + this._signSeparator;
+                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
+                break;
+            case DisplayOrder.SYMBOL_NAME_NUMBER_SIGN:
+                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
+                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
+                break;
+            case DisplayOrder.SYMBOL_NAME_SIGN_NUMBER:
+                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
+                if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
+                if (sign !== '') result += sign + this._signSeparator;
+                break;
+            case DisplayOrder.SYMBOL_NUMBER_NAME_SIGN:
+            case DisplayOrder.SYMBOL_NUMBER_SIGN_NAME:
+                if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
+                break;
+            case DisplayOrder.SYMBOL_SIGN_NAME_NUMBER:
                 if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
                 if (sign !== '') result += sign + this._signSeparator;
                 if (this._currencyName !== '') result += this._currencyName + this._nameSeparator;
                 break;
-            case displayOrder.SYMBOL_SIGN_NUMBER_NAME:
+            case DisplayOrder.SYMBOL_SIGN_NUMBER_NAME:
                 if (this._currencySymbol !== '') result += this._currencySymbol + this._symbolSeparator;
                 if (sign !== '') result += sign + this._signSeparator;
                 break;
@@ -296,76 +294,76 @@ export class MoneyFormatter {
         let result : string = '';
         const sign : string = isNegative ? this._negativeSign : this._positiveSign;
         switch (this._displayOrder) {
-            case displayOrder.NAME_NUMBER_SIGN_SYMBOL:
+            case DisplayOrder.NAME_NUMBER_SIGN_SYMBOL:
                 if (sign !== '') result += this._signSeparator + sign;
                 if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
                 break;
-            case displayOrder.NAME_NUMBER_SYMBOL_SIGN:
+            case DisplayOrder.NAME_NUMBER_SYMBOL_SIGN:
                 if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
                 if (sign !== '') result += this._signSeparator + sign;
                 break;
-            case displayOrder.NAME_SIGN_NUMBER_SYMBOL:
+            case DisplayOrder.NAME_SIGN_NUMBER_SYMBOL:
                 if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
                 break;
-            case displayOrder.NAME_SYMBOL_NUMBER_SIGN:
+            case DisplayOrder.NAME_SYMBOL_NUMBER_SIGN:
                 if (sign !== '') result += this._signSeparator + sign;
                 break;
-            case displayOrder.NUMBER_NAME_SIGN_SYMBOL:
+            case DisplayOrder.NUMBER_NAME_SIGN_SYMBOL:
                 if (this._currencyName !== '') result += this._nameSeparator + this._currencyName;
                 if (sign !== '') result += this._signSeparator + sign;
                 if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
                 break;
-            case displayOrder.NUMBER_NAME_SYMBOL_SIGN:
+            case DisplayOrder.NUMBER_NAME_SYMBOL_SIGN:
                 if (this._currencyName !== '') result += this._nameSeparator + this._currencyName;
                 if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
                 if (sign !== '') result += this._signSeparator + sign;
                 break;
-            case displayOrder.NUMBER_SIGN_NAME_SYMBOL:
+            case DisplayOrder.NUMBER_SIGN_NAME_SYMBOL:
                 if (sign !== '') result += this._signSeparator + sign;
                 if (this._currencyName !== '') result += this._nameSeparator + this._currencyName;
                 if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
                 break;
-            case displayOrder.NUMBER_SIGN_SYMBOL_NAME:
+            case DisplayOrder.NUMBER_SIGN_SYMBOL_NAME:
                 if (sign !== '') result += this._signSeparator + sign;
                 if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
                 if (this._currencyName !== '') result += this._nameSeparator + this._currencyName;
                 break;
-            case displayOrder.NUMBER_SYMBOL_NAME_SIGN:
+            case DisplayOrder.NUMBER_SYMBOL_NAME_SIGN:
                 if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
                 if (this._currencyName !== '') result += this._nameSeparator + this._currencyName;
                 if (sign !== '') result += this._signSeparator + sign;
                 break;
-            case displayOrder.NUMBER_SYMBOL_SIGN_NAME:
+            case DisplayOrder.NUMBER_SYMBOL_SIGN_NAME:
                 if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
                 if (sign !== '') result += this._signSeparator + sign;
                 if (this._currencyName !== '') result += this._nameSeparator + this._currencyName;
                 break;
-            case displayOrder.SIGN_NAME_NUMBER_SYMBOL:
+            case DisplayOrder.SIGN_NAME_NUMBER_SYMBOL:
                 if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
                 break;
-            case displayOrder.SIGN_NUMBER_NAME_SYMBOL:
+            case DisplayOrder.SIGN_NUMBER_NAME_SYMBOL:
                 if (this._currencyName !== '') result += this._nameSeparator + this._currencyName;
                 if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
                 break;
-            case displayOrder.SIGN_NUMBER_SYMBOL_NAME:
+            case DisplayOrder.SIGN_NUMBER_SYMBOL_NAME:
                 if (this._currencySymbol !== '') result += this._symbolSeparator + this._currencySymbol;
                 if (this._currencyName !== '') result += this._nameSeparator + this._currencyName;
                 break;
-            case displayOrder.SIGN_SYMBOL_NUMBER_NAME:
+            case DisplayOrder.SIGN_SYMBOL_NUMBER_NAME:
                 if (this._currencyName !== '') result += this._nameSeparator + this._currencyName;
                 break;
-            case displayOrder.SYMBOL_NAME_NUMBER_SIGN:
+            case DisplayOrder.SYMBOL_NAME_NUMBER_SIGN:
                 if (sign !== '') result += this._signSeparator + sign;
                 break;
-            case displayOrder.SYMBOL_NUMBER_NAME_SIGN:
+            case DisplayOrder.SYMBOL_NUMBER_NAME_SIGN:
                 if (this._currencyName !== '') result += this._nameSeparator + this._currencyName;
                 if (sign !== '') result += this._signSeparator + sign;
                 break;
-            case displayOrder.SYMBOL_NUMBER_SIGN_NAME:
+            case DisplayOrder.SYMBOL_NUMBER_SIGN_NAME:
                 if (sign !== '') result += this._signSeparator + sign;
                 if (this._currencyName !== '') result += this._nameSeparator + this._currencyName;
                 break;
-            case displayOrder.SYMBOL_SIGN_NUMBER_NAME:
+            case DisplayOrder.SYMBOL_SIGN_NUMBER_NAME:
                 if (this._currencyName !== '') result += this._nameSeparator + this._currencyName;
                 break;
 
@@ -393,7 +391,7 @@ export class MoneyFormatter {
             result += this._digitCharacters[parseInt(moneyString)];
         } else {
             moneyString = moneyString.split("").reverse().join("");
-            if (this._myriadMode === myriadMode.JAPANESE) {
+            if (this._myriadMode === MyriadMode.JAPANESE) {
                 result += this.handleJapaneseMyriad(moneyString);
             } else {
                 throw new Error('Provided myriad mode not supported.');
@@ -465,7 +463,7 @@ export class MoneyFormatter {
      * @param myriadMode Sets the active myriad mode.
      * @description This sets the myriad mode, that controls the behaviour of the getFormattedMyriadString method.
      */
-    set myriadMode(myriadMode : myriadMode) {
+    set myriadMode(myriadMode : MyriadMode) {
         this._myriadMode = myriadMode;
     }
     /**
@@ -520,7 +518,7 @@ export class MoneyFormatter {
      * @description Sets the order in which display currency name, currency sign, pos/neg sign and number. If you want to
      * omit any of these, set the corresponding member to an empty string. Note: number is always displayed.
      */
-    set displayOrder(order : displayOrder) {
+    set displayOrder(order : DisplayOrder) {
         this._displayOrder = order;
     }
 
@@ -560,7 +558,7 @@ export class MoneyFormatter {
         return this._digitCharacters.slice(0);
     }
 
-    get myriadMode() : myriadMode {
+    get myriadMode() : MyriadMode {
         return this._myriadMode;
     }
 
@@ -580,7 +578,7 @@ export class MoneyFormatter {
         return this._groupSize;
     }
 
-    get displayOrder() : displayOrder {
+    get displayOrder() : DisplayOrder {
         return this._displayOrder;
     }
 

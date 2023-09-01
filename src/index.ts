@@ -1,3 +1,3 @@
-export {Money} from './money';
-export {MoneyCalculator} from './money_calculator';
-export {MoneyFormatter} from './money_formatter';
+export * from './money';
+export * from './money_calculator';
+export * from './money_formatter';
