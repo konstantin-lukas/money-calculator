@@ -63,7 +63,9 @@ export class Money {
      * @description Sets the currently held integer part of the number, e.g. '25' for the number '-25.20'.
      */
     set integerPart(integerPart : string) {
-        if (!Money._intRegex.test(integerPart)) throw new Error('Input number is not a valid positive integer.');
+        if (!Money._intRegex.test(integerPart)) throw new Error(
+            `Input number is not a valid positive integer. Received the following value "${integerPart}"`
+        );
         this._integerPart = integerPart.toString();
         if (this.isNull()) this.isNegative = false;
     }

@@ -131,7 +131,7 @@ export class MoneyCalculator {
                 }
             }
 
-            money1.integerPart = (integerPartResult === '0' ? '0' : integerPartResult.replace(/^0+/, ''));
+            money1.integerPart = (/^0+$/.test(integerPartResult) ? '0' : integerPartResult.replace(/^0+/, ''));
             money1.isNegative = largerAbs.isNegative;
         } else {
             let integerPart1 : string = money1.integerPart;

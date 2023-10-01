@@ -114,6 +114,10 @@ describe('Money Calculator class', () => {
             money2.value = '-0.02';
             MoneyCalculator.add(money1, money2);
             expect(money1.value).toBe('-0.01');
+            money1.value = '20.00';
+            money2.value = '-20.00';
+            MoneyCalculator.add(money1, money2);
+            expect(money1.value).toBe('0.00');
         });
     });
     describe('The max method', () => {
